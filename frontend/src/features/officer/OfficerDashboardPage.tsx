@@ -47,28 +47,28 @@ export const OfficerDashboardPage: React.FC = () => {
       title: 'দাপ্তরিক অনুরোধ',
       desc: 'নতুন আগত টাস্ক গ্রহণ বা সুনির্দিষ্ট কারণসহ প্রত্যাখ্যান',
       path: '/officer/requests',
-      icon: <Inbox className="w-5 h-5 text-[#d4c19a]" />,
+      icon: <Inbox className="w-5 h-5 text-[var(--ink)]" />,
       badge: 'দায়িত্ব নির্ধারণ'
     },
     {
       title: 'অ্যাসাইনমেন্ট কিউ ও রিকমেন্ডার',
       desc: 'এআই বহু-ফ্যাক্টর স্কোরে শীর্ষ কর্মকর্তা নির্বাচন ও কিউ ডিসপ্যাচ',
       path: '/officer/assignment-queue',
-      icon: <ListTodo className="w-5 h-5 text-[#4b9e78]" />,
+      icon: <ListTodo className="w-5 h-5 text-[var(--ink)]" />,
       badge: 'ক্যাপাসিটি গেট'
     },
     {
       title: 'উপস্থিতি ও ক্যাপাসিটি',
       desc: 'উপস্থিতি স্ট্যাটাস (Available/Busy/Leave) ও সর্বোচ্চ টাস্ক সীমা',
       path: '/officer/availability',
-      icon: <UserCheck className="w-5 h-5 text-[#d4c19a]" />,
+      icon: <UserCheck className="w-5 h-5 text-[var(--ink)]" />,
       badge: 'স্টাফ প্রোফাইল'
     },
     {
       title: 'বিভাগীয় ওয়ার্কলোড',
       desc: 'দপ্তরের মোট সক্রিয় ভার, কর্মকর্তাভিত্তিক বণ্টন ও হটস্পট লোড',
       path: '/officer/workload',
-      icon: <BarChart2 className="w-5 h-5 text-[#4b9e78]" />,
+      icon: <BarChart2 className="w-5 h-5 text-[var(--ink)]" />,
       badge: 'অ্যানালিটিক্স'
     }
   ];
@@ -205,8 +205,8 @@ export const OfficerDashboardPage: React.FC = () => {
                     </div>
 
                     {isBlocked && (
-                      <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-[#373224] border border-amber-200 dark:border-[#6b5c3e] text-amber-800 dark:text-[#d4c19a] text-xs flex items-center gap-2 mt-2">
-                        <Lock className="w-4 h-4 shrink-0" />
+                      <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-xs flex items-center gap-2 mt-2 font-medium shadow-xs">
+                        <Lock className="w-4 h-4 text-amber-700 dark:text-amber-400 shrink-0" />
                         <span>{task.waitingReason || 'পূর্ববর্তী বিভাগের কাজ সম্পন্ন হওয়ার জন্য অপেক্ষমাণ'}</span>
                       </div>
                     )}

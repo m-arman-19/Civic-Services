@@ -79,13 +79,13 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
         {/* Modal Header */}
         <div className="px-6 py-5 bg-[var(--bg)] text-[var(--ink)] flex items-center justify-between border-b border-[var(--line)]">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[var(--green-light)] text-[var(--green)] rounded-xl border border-[var(--line)]">
+            <div className="p-2.5 bg-[var(--paper)] text-[var(--ink)] rounded-xl border border-[var(--line)]">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-base font-bold text-[var(--ink)] flex items-center gap-2">
                 <span>এআই-সহায়তাপ্রাপ্ত কর্মকর্তা বরাদ্দ সুপারিশ</span>
-                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[var(--paper)] text-[var(--gold)] border border-[var(--line)] font-semibold">
+                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] font-semibold">
                   Explainable Model
                 </span>
               </h2>
@@ -96,7 +96,7 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-[var(--muted)] hover:text-[var(--ink)] rounded-xl hover:bg-[var(--green-light)] transition cursor-pointer"
+            className="p-2 text-[var(--muted)] hover:text-[var(--ink)] rounded-xl hover:bg-[var(--bg)] transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -109,9 +109,9 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
             <span className="font-semibold text-[var(--ink)] line-clamp-1">{taskTitle || taskId}</span>
           </div>
           {wardNumber && (
-            <div className="flex items-center gap-1.5 text-[#a7b0a8]">
-              <MapPin className="w-4 h-4 text-[#4b9e78]" />
-              <span>ওয়ার্ড: <strong className="text-[#eeeee6] font-mono">{toBanglaNumber(wardNumber)}</strong></span>
+            <div className="flex items-center gap-1.5 text-[var(--muted)]">
+              <MapPin className="w-4 h-4 text-[var(--ink)]" />
+              <span>ওয়ার্ড: <strong className="text-[var(--ink)] font-mono">{toBanglaNumber(wardNumber)}</strong></span>
             </div>
           )}
         </div>
@@ -120,7 +120,7 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
         <div className="p-6 overflow-y-auto flex-1 space-y-5">
           {/* Note Input */}
           <div>
-            <label className="block text-sm font-semibold text-[#eeeee6] mb-2">
+            <label className="block text-sm font-semibold text-[var(--ink)] mb-2">
               অ্যাসাইনমেন্ট রেফারেন্স নোট (ঐচ্ছিক):
             </label>
             <input
@@ -128,47 +128,47 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
               value={customNote}
               onChange={e => setCustomNote(e.target.value)}
               placeholder="যেমন: ওয়ার্ডের জরুরি কাজের জন্য বিশেষ বিবেচনায় বরাদ্দ..."
-              className="w-full px-4 py-3 text-sm bg-[#0d100e] text-[#eeeee6] placeholder-[#708379] border border-[#343d34] rounded-xl focus:outline-none focus:border-[#d4c19a]"
+              className="civic-input text-sm"
             />
           </div>
 
           {/* Model Formula Explanation Box */}
-          <div className="p-4 bg-[#1b221c] border border-[#343d34] rounded-xl text-sm text-[#a7b0a8] space-y-2">
-            <div className="flex items-center gap-2 font-semibold text-[#d4c19a]">
-              <Cpu className="w-4.5 h-4.5 text-[#d4c19a]" />
+          <div className="p-4 bg-[var(--bg)] border border-[var(--line)] rounded-xl text-sm text-[var(--muted)] space-y-2">
+            <div className="flex items-center gap-2 font-semibold text-[var(--ink)]">
+              <Cpu className="w-4.5 h-4.5 text-[var(--ink)]" />
               <span>বরাদ্দ স্কোরিং অ্যালগরিদম কাঠামো:</span>
             </div>
-            <div className="font-mono text-xs text-[#eeeee6] bg-[#0d100e] p-3 rounded-lg border border-[#242c24]">
+            <div className="font-mono text-xs text-[var(--ink)] bg-[var(--paper)] p-3 rounded-lg border border-[var(--line)]">
               Score = (0.45 × সক্ষমতা মার্জিন) + (0.35 × ওয়ার্ড মিল) + (0.20 × এসএলএ জরুরি স্কোর)
             </div>
           </div>
 
           {loading ? (
-            <div className="py-14 text-center text-[#a7b0a8] space-y-3">
-              <div className="w-9 h-9 border-2 border-[#d4c19a] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="py-14 text-center text-[var(--muted)] space-y-3">
+              <div className="w-9 h-9 border-2 border-[var(--ink)] border-t-transparent rounded-full animate-spin mx-auto" />
               <p className="text-sm">উপযুক্ত ও উপলব্ধ কর্মকর্তা খোঁজা হচ্ছে...</p>
             </div>
           ) : error ? (
-            <div className="p-4 bg-[#382326] border border-[#71434a] text-[#e8b6b8] rounded-xl text-sm flex items-center gap-2.5">
+            <div className="p-4 bg-[var(--status-emergency-bg)] border border-[var(--status-emergency-line)] text-[var(--status-emergency)] rounded-xl text-sm flex items-center gap-2.5">
               <AlertTriangle className="w-5 h-5 shrink-0" />
               <span>{error}</span>
             </div>
           ) : recommendations.length === 0 ? (
-            <div className="p-8 text-center bg-[#373224]/30 border border-[#6b5c3e] rounded-xl space-y-3.5">
-              <AlertTriangle className="w-9 h-9 text-[#d4c19a] mx-auto" />
-              <h3 className="text-base font-bold text-[#eeeee6]">
+            <div className="p-8 text-center bg-[var(--status-medium-bg)] border border-[var(--status-medium-line)] rounded-xl space-y-3.5">
+              <AlertTriangle className="w-9 h-9 text-[var(--status-medium)] mx-auto" />
+              <h3 className="text-base font-bold text-[var(--ink)]">
                 বর্তমানে কোনো কর্মকর্তা দায়িত্ব গ্রহণের জন্য উপলব্ধ নেই
               </h3>
-              <p className="text-sm text-[#a7b0a8] max-w-md mx-auto leading-relaxed">
+              <p className="text-sm text-[var(--muted)] max-w-md mx-auto leading-relaxed">
                 বিভাগের সকল কর্মকর্তার নির্ধারিত কাজের সক্ষমতা পূর্ণ রয়েছে অথবা তারা ছুটিতে আছেন।
                 টাস্কটি অপেক্ষারত কিউতে (Waiting Queue) অন্তর্ভুক্ত থাকবে এবং কোনো কর্মকর্তা উপলব্ধ হওয়া মাত্র স্বয়ংক্রিয়ভাবে বরাদ্দ হবে।
               </p>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="text-sm font-semibold text-[#eeeee6] flex items-center justify-between">
+              <div className="text-sm font-semibold text-[var(--ink)] flex items-center justify-between">
                 <span>উপযুক্ত কর্মকর্তা তালিকা ({toBanglaNumber(recommendations.length)} জন পাওয়া গেছে):</span>
-                <span className="text-[#a7b0a8] text-xs font-normal">র‌্যাঙ্ক অনুযায়ী সাজানো</span>
+                <span className="text-[var(--muted)] text-xs font-normal">র‌্যাঙ্ক অনুযায়ী সাজানো</span>
               </div>
 
               {recommendations.map((rec: any, index: number) => {
@@ -180,47 +180,47 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
                     key={rec.officer_id}
                     className={`p-5 rounded-2xl border transition ${
                       isTopPick
-                        ? 'border-[#4b9e78] bg-[#1b221c] shadow-lg'
-                        : 'border-[#343d34] bg-[#151a16] hover:border-[#4b9e78]/50'
+                        ? 'border-[var(--ink)] bg-[var(--paper-elevated)] shadow-md'
+                        : 'border-[var(--line)] bg-[var(--paper)] hover:border-[var(--line-strong)]'
                     }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-2.5 flex-1">
                         <div className="flex flex-wrap items-center gap-2.5">
-                          <span className="font-bold text-base text-[#eeeee6]">
+                          <span className="font-bold text-base text-[var(--ink)]">
                             {rec.officer_name || `কর্মকর্তা #${rec.officer_id}`}
                           </span>
                           {isTopPick && (
-                            <span className="text-xs font-bold bg-[#1c2b20] text-[#a8e6cf] px-2.5 py-0.5 rounded-full border border-[#295e42]">
+                            <span className="text-xs font-bold bg-[var(--ink)] text-[var(--bg)] px-2.5 py-0.5 rounded-full">
                               শীর্ষ পছন্দ (#১)
                             </span>
                           )}
-                          <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[#0d100e] text-[#d4c19a] border border-[#242c24]">
+                          <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)]">
                             স্কোর: {toBanglaNumber(scorePercent)}%
                           </span>
                         </div>
 
                         {/* Capacity meter */}
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-[#a7b0a8]">
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--muted)]">
                           <span className="flex items-center gap-1.5">
-                            <UserCheck className="w-4 h-4 text-[#4b9e78]" />
-                            <span>চলতি কাজ: <strong className="text-[#eeeee6] font-mono">{toBanglaNumber(rec.active_tasks)}/{toBanglaNumber(rec.max_tasks)}</strong></span>
+                            <UserCheck className="w-4 h-4 text-[var(--ink)]" />
+                            <span>চলতি কাজ: <strong className="text-[var(--ink)] font-mono">{toBanglaNumber(rec.active_tasks)}/{toBanglaNumber(rec.max_tasks)}</strong></span>
                           </span>
-                          <span className="text-[#343d34]">|</span>
+                          <span className="text-[var(--line)]">|</span>
                           <span className="flex items-center gap-1.5">
-                            <TrendingUp className="w-4 h-4 text-[#d4c19a]" />
-                            <span>অবশিষ্ট সক্ষমতা: <strong className="text-[#eeeee6] font-mono">{toBanglaNumber(rec.capacity_margin)}</strong></span>
+                            <TrendingUp className="w-4 h-4 text-[var(--ink)]" />
+                            <span>অবশিষ্ট সক্ষমতা: <strong className="text-[var(--ink)] font-mono">{toBanglaNumber(rec.capacity_margin)}</strong></span>
                           </span>
-                          <span className="text-[#343d34]">|</span>
+                          <span className="text-[var(--line)]">|</span>
                           <span className={`px-2.5 py-0.5 rounded text-xs font-medium border ${
-                            rec.ward_match ? 'bg-[#1c2b20] text-[#4b9e78] border-[#295e42]' : 'bg-[#151a16] text-[#a7b0a8] border-[#343d34]'
+                            rec.ward_match ? 'bg-[var(--status-low-bg)] text-[var(--status-low)] border-[var(--status-low-line)]' : 'bg-[var(--bg)] text-[var(--muted)] border-[var(--line)]'
                           }`}>
                             {rec.ward_match ? 'ওয়ার্ড কভারেজ মিল' : 'সাধারণ কভারেজ'}
                           </span>
                         </div>
 
                         {/* Explanation Reason */}
-                        <p className="text-sm text-[#c8d1c9] bg-[#0d100e] p-3 rounded-xl border border-[#242c24] leading-relaxed">
+                        <p className="text-sm text-[var(--ink)] bg-[var(--bg)] p-3 rounded-xl border border-[var(--line)] leading-relaxed">
                           {rec.reason_bn || 'উপযুক্ত কাজের চাপ ও সেবা এলাকার ভিত্তিতে প্রস্তাবিত।'}
                         </p>
                       </div>
@@ -229,15 +229,15 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
                       <button
                         onClick={() => handleAssign(rec.officer_id)}
                         disabled={assigningId !== null}
-                        className={`px-5 py-3 text-sm font-bold rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md active:scale-95 ${
+                        className={`px-5 py-3 text-sm font-bold rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-sm active:scale-95 ${
                           isTopPick
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-dark)] text-white'
-                            : 'bg-[var(--paper)] hover:bg-[var(--green-light)] text-[var(--ink)] border border-[var(--line)]'
+                            ? 'civic-btn-primary'
+                            : 'civic-btn-secondary'
                         }`}
                       >
                         {assigningId === rec.officer_id ? (
                           <>
-                            <div className="w-4 h-4 border-2 border-[#0d100e] border-t-transparent rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                             <span>বরাদ্দ হচ্ছে...</span>
                           </>
                         ) : (
@@ -256,10 +256,10 @@ export const OfficerAssignmentRecommendationModal: React.FC<OfficerAssignmentRec
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 bg-[#0d100e] border-t border-[#343d34] flex justify-end">
+        <div className="px-6 py-3.5 bg-[var(--bg)] border-t border-[var(--line)] flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-[#a7b0a8] hover:text-[#eeeee6] bg-[#151a16] border border-[#343d34] hover:border-[#d4c19a] rounded-xl transition cursor-pointer"
+            className="civic-btn-secondary text-xs px-4 py-2"
           >
             বাতিল করুন
           </button>

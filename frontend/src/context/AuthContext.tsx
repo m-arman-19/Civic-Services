@@ -38,8 +38,15 @@ export const ROLE_SAMPLE_USERS: Record<UserRole, User> = {
     id: 'admin_01',
     name: 'মোছাঃ নাসরিন সুলতানা',
     role: 'admin',
-    designation: 'সিস্টেম অ্যাডমিনিস্ট্রেটর ও সিটি গভর্ন্যান্স হেড',
+    designation: 'সিস্টেম অ্যাডমিনিস্ট্রেটর (টেকনিক্যাল প্ল্যাটফর্ম)',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+  },
+  governance_head: {
+    id: 'gov_01',
+    name: 'ব্যারিস্টার শাহিনুর রহমান',
+    role: 'governance_head',
+    designation: 'সিটি গভর্নেন্স প্রধান (ম্যুনিসিপ্যাল পলিসি ও সেবা প্রশাসন)',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'
   }
 };
 
@@ -53,6 +60,9 @@ interface AuthContextType {
   logout: () => void;
   isDevDemoDrawerOpen: boolean;
   setDevDemoDrawerOpen: (open: boolean) => void;
+  isSidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,6 +103,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const [isDevDemoDrawerOpen, setDevDemoDrawerOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(prev => !prev);
+  };
 
   const loginAsRole = (role: UserRole, identifier?: string) => {
     if (!DEMO_MODE) return;
@@ -138,7 +153,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setDemoRole: loginAsRole,
         logout,
         isDevDemoDrawerOpen,
-        setDevDemoDrawerOpen
+        setDevDemoDrawerOpen,
+        isSidebarOpen,
+        setSidebarOpen,
+        toggleSidebar
       }}
     >
       {children}

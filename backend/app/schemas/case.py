@@ -55,6 +55,15 @@ class ResponsibilityOverrideRequest(BaseModel):
     officer_id: Optional[str] = None
     reason: str
 
+class CaseVerificationRequest(BaseModel):
+    lead_department_id: str
+    priority: PriorityEnum
+    is_overridden: bool = False
+    override_reason: Optional[str] = None
+    priority_override_reason: Optional[str] = None
+    confirmed_notes: Optional[str] = None
+    assigned_asset_id: Optional[str] = None
+
 class TaskRejectRequest(BaseModel):
     reason_bn: str = Field(..., description="দাপ্তরিক প্রত্যাখ্যানের স্পষ্ট কারণ")
 
@@ -67,6 +76,16 @@ class OfficerAvailabilityUpdateRequest(BaseModel):
     availability_status: str = Field(..., description="available, busy, on_leave, offline, inactive")
     max_concurrent_tasks: Optional[int] = None
     shift_schedule: Optional[Dict[str, Any]] = None
+
+class CaseCloseRequest(BaseModel):
+    reason_bn: str = Field(..., description="কেস সমাপ্তির যৌক্তিক ব্যাখ্যা")
+    exception_documented: bool = False
+    exception_notes: Optional[str] = None
+
+class ResolutionReviewRequest(BaseModel):
+    decision: str = Field(..., description="approved অথবা rework_required")
+    notes_bn: str = Field(..., description="পর্যালোচনা সংক্রান্ত মতামত ও নির্দেশনা")
+    target_task_id: Optional[str] = None
 
 
 class CaseResponse(BaseModel):

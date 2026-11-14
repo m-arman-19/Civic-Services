@@ -64,12 +64,12 @@ export const NotificationDropdown: React.FC = () => {
     switch (type) {
       case 'action_required':
       case 'objection_filed':
-        return <AlertTriangle className="w-4 h-4 text-[#d4c19a]" />;
+        return <AlertTriangle className="w-4 h-4 text-amber-700 dark:text-amber-400" />;
       case 'evidence_submitted':
       case 'status_update':
-        return <CheckCircle2 className="w-4 h-4 text-[#166534]" />;
+        return <CheckCircle2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />;
       default:
-        return <Bell className="w-4 h-4 text-[#166534]" />;
+        return <Bell className="w-4 h-4 text-[var(--ink)]" />;
     }
   };
 
@@ -79,14 +79,14 @@ export const NotificationDropdown: React.FC = () => {
       <button
         type="button"
         onClick={() => setIsOpen(prev => !prev)}
-        className="p-2.5 rounded-xl border border-[var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:text-[var(--ink)] hover:border-[#166534] relative transition cursor-pointer shadow-xs"
+        className="p-2 rounded-lg border border-[var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:text-[var(--ink)] hover:border-[var(--ink)] relative transition cursor-pointer shadow-xs"
         title="বিজ্ঞপ্তি ও অ্যালার্ট"
         aria-label="বিজ্ঞপ্তি খুলুন"
         aria-expanded={isOpen}
       >
-        <Bell className="w-4 h-4" />
+        <Bell className="w-4 h-4" aria-hidden="true" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-[#166534] text-[10px] font-bold text-white shadow">
+          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-[var(--accent)] text-[10px] font-bold text-[var(--accent-fg)] shadow-xs">
             {toBanglaNumber(unreadCount)}
           </span>
         )}
@@ -94,13 +94,13 @@ export const NotificationDropdown: React.FC = () => {
 
       {/* Floating Popup / Popover */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[var(--paper)] border border-[var(--line)] shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-xl bg-[var(--paper)] border border-[var(--line)] shadow-xl z-50 overflow-hidden animate-in fade-in duration-150">
           {/* Header */}
-          <div className="p-4 border-b border-[var(--line)] flex items-center justify-between bg-[var(--bg)]">
+          <div className="p-3.5 border-b border-[var(--line)] flex items-center justify-between bg-[var(--paper-elevated)]">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-[var(--ink)]">বিজ্ঞপ্তি</span>
+              <span className="text-xs font-bold text-[var(--ink)]">বিজ্ঞপ্তি</span>
               {unreadCount > 0 && (
-                <span className="text-[11px] font-semibold text-[#166534] bg-[#eaf5ed] border border-[#bbf7d0] px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-semibold text-[var(--ink)] bg-[var(--paper)] border border-[var(--line)] px-1.5 py-0.5 rounded-full">
                   {toBanglaNumber(unreadCount)}টি নতুন
                 </span>
               )}
@@ -110,16 +110,16 @@ export const NotificationDropdown: React.FC = () => {
               <button
                 type="button"
                 onClick={handleMarkAllRead}
-                className="text-[11px] font-semibold text-[#166534] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-[11px] font-semibold text-[var(--muted)] hover:text-[var(--ink)] flex items-center gap-1 cursor-pointer"
               >
-                <CheckCheck className="w-3.5 h-3.5" />
-                <span>সব পঠিত করুন</span>
+                <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>সব পঠিত</span>
               </button>
             )}
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-80 overflow-y-auto divide-y divide-[var(--line)]">
+          <div className="max-h-80 overflow-y-auto divide-y divide-[var(--line-subtle)]">
             {notifications.length === 0 ? (
               <div className="p-8 text-center text-xs text-[var(--muted)]">
                 কোনো নতুন বিজ্ঞপ্তি নেই
@@ -129,11 +129,11 @@ export const NotificationDropdown: React.FC = () => {
                 <div
                   key={n.id}
                   onClick={() => handleNotificationClick(n)}
-                  className={`p-3.5 flex items-start gap-3 transition cursor-pointer hover:bg-[var(--bg)] ${
-                    !n.isRead ? 'bg-[#166534]/5' : ''
+                  className={`p-3.5 flex items-start gap-3 transition cursor-pointer hover:bg-[var(--paper-elevated)] ${
+                    !n.isRead ? 'bg-[var(--paper-elevated)]/60' : ''
                   }`}
                 >
-                  <div className="p-2 rounded-xl bg-[var(--bg)] border border-[var(--line)] shrink-0 mt-0.5">
+                  <div className="p-1.5 rounded-md bg-[var(--paper)] border border-[var(--line)] shrink-0 mt-0.5 text-[var(--ink)]">
                     {getIcon(n.type)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -142,16 +142,16 @@ export const NotificationDropdown: React.FC = () => {
                         {n.title}
                       </h4>
                       {!n.isRead && (
-                        <span className="w-2 h-2 rounded-full bg-[#166534] shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] shrink-0" aria-label="Unread" />
                       )}
                     </div>
                     <p className="text-[11px] text-[var(--muted)] line-clamp-2 mt-0.5 leading-relaxed">
                       {n.message}
                     </p>
-                    <div className="flex items-center justify-between mt-2 text-[10px] text-[var(--muted)]">
+                    <div className="flex items-center justify-between mt-1.5 text-[10px] text-[var(--muted)]">
                       <span>{formatBanglaDate(n.createdAt)}</span>
                       {n.caseId && (
-                        <span className="font-mono text-[#166534] font-semibold">
+                        <span className="font-mono text-[var(--ink)] font-semibold">
                           #{n.caseId}
                         </span>
                       )}
@@ -163,14 +163,14 @@ export const NotificationDropdown: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <div className="p-3 border-t border-[var(--line)] bg-[var(--bg)] text-center">
+          <div className="p-2.5 border-t border-[var(--line)] bg-[var(--paper-elevated)] text-center">
             <Link
               to="/notifications"
               onClick={() => setIsOpen(false)}
-              className="text-xs font-bold text-[#166534] hover:underline inline-flex items-center gap-1.5"
+              className="text-xs font-semibold text-[var(--ink)] hover:underline inline-flex items-center gap-1.5"
             >
               <span>সকল বিজ্ঞপ্তি দেখুন</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
           </div>
         </div>

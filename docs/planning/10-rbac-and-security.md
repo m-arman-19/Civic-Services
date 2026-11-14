@@ -13,7 +13,8 @@
 | Ward-Desk / Service-Centre Staff | WARD_DESK | Own assigned ward(s) only | Verifies proposals, confirms duplicates, approves plans, assists citizens |
 | Department Officer / Field Staff | DEPT_OFFICER | Own assigned department tasks only | Accepts/rejects tasks, updates status, uploads evidence |
 | Case Coordinator | COORDINATOR | Authorized jurisdiction (city corporation) | Approves sequencing, handles escalations, closes cases, reviews closures |
-| Administrator | ADMIN | System-wide configuration only | User management, rules, gate, knowledge, audit review; does not automatically access private case content |
+| Administrator | ADMIN | System-wide configuration only | Technical platform operations, account provisioning, diagnostics, audit review; no unrestricted private case or media access |
+| City Governance Head | GOVERNANCE_HEAD | Municipal-wide policy jurisdiction | Policy oversight, dual-approval for responsibility rules/sequencing/gate reductions, SLA target ownership, transparency policy; no direct database/secret access or operational case closure |
 | Public (unauthenticated) | PUBLIC | Aggregated, anonymised data only | Public map and dashboard |
 
 ---
@@ -98,12 +99,23 @@
 - Cannot access private citizen personal data (phone/email) directly
 - Cannot lower confidence gate alone (requires dual approval with admin)
 
-### 3.5 Administrator Restrictions
-- Can manage user accounts; cannot see raw citizen personal data through admin interface
-- Can view audit log; cannot modify it (append-only constraint)
-- Can raise confidence gate alone
-- Lowering confidence gate requires: second admin approval + re-validation + versioned audit record
-- Administrator does not automatically get access to private case content
+### 3.5 Administrator (Technical Platform) Restrictions
+- Can provision and manage user accounts and account statuses; cannot see unmasked citizen personal data or private case evidence
+- Can view audit log and verify integrity; cannot modify or delete historical records (immutable append-only)
+- Can manage technical configuration, infrastructure diagnostics, and error reporting
+- Cannot independently change protected municipal policy (responsibility rules, task sequencing rules, SLA targets)
+- Cannot unilaterally lower the AI confidence gate (requires dual approval with City Governance Head)
+- Cannot perform operational case closure or departmental task verification (HTTP 403)
+
+### 3.6 City Governance Head Restrictions
+- Owns municipal service policy, SLA targets, public transparency policies, and rule governance
+- Approves or rejects department responsibility-rules and multi-department task-sequencing pipelines
+- Lowering confidence gate requires: dual approval with System Administrator + held-out re-validation
+- Cannot access database connection secrets, infrastructure server keys, or source code configs
+- Cannot provision user accounts or arbitrarily modify account statuses (technical admin exclusive)
+- Cannot access raw unmasked citizen personal data (phone numbers, full NID, private evidence files)
+- Reviews escalated cases using minimum-necessary case context only (no citizen PII)
+- Cannot close cases or approve evidence (Coordinator operational role only)
 
 ---
 
@@ -235,3 +247,41 @@ Key areas: Authentication (V2), Session (V3), Access Control (V4), Input Validat
 | MFA bypass | Skip TOTP challenge | pytest | Staff auth |
 | Audit immutability | Attempt UPDATE/DELETE on audit_events | pytest (DB level) | Trigger test |
 | Gate dual-approval | Admin lowers gate without second approval | pytest | Config security |
+
+---
+
+## 8. System Administrator Account & Identity Management (IAM Specification)
+
+### 8.1 Account Lifecycle State Machine
+Official member accounts progress through authorized lifecycle states:
+```mermaid
+stateDiagram-v2
+    [*] --> Pending: Member Provisioned
+    Pending --> Active: Activation / Identity Verified
+    Active --> Suspended: Administrative Freeze / Security Lock
+    Suspended --> Active: Re-activated by Admin
+    Active --> Deactivated: Termination / Deprovisioning
+    Suspended --> Deactivated: Permanent Termination
+    Deactivated --> [*]
+```
+- **Pending**: Account provisioned; awaiting initial verification or onboarding.
+- **Active**: Account verified and fully permitted to perform assigned workflow duties.
+- **Suspended**: Account temporarily frozen due to administrative review, 5 failed authentication attempts (15-min lockout), or security compromise.
+- **Deactivated**: Terminal state; login strictly forbidden; historical case and audit associations preserved indefinitely (no cascading delete).
+
+### 8.2 Privileged Role Assignment & Dual Authority Enforcement
+To uphold separation of powers:
+- **System Administrator** cannot unilaterally assign or elevate any account into the **City Governance Head** role.
+- Elevation to `governance_head` requires an explicit, audited `PrivilegedRoleRequest` submitted by a System Administrator and decided (Approved/Rejected) exclusively by an authorized City Governance Head.
+- **Self-Approval Prohibition**: An actor cannot approve their own elevation or an application they created.
+
+### 8.3 Temporary Password & Credential Hygiene
+- Where administrative provisioning generates credentials, the system generates a cryptographically strong, 12+ character temporary password.
+- **One-Time Controlled Interface**: The temporary password is displayed only once to the administrator and is never persisted in plaintext, logs, or serializers.
+- **Forced First-Login Change**: The account is flagged with `must_change_password = True`, requiring a mandatory password replacement prior to performing municipal actions.
+- **Session Revocation**: A password reset automatically revokes all existing active sessions by setting `sessions_revoked_at` with microsecond-level token `iat` invalidation.
+
+### 8.4 Citizen PII Masking in Administrative Interfaces
+- When administrative accounts browse the Account Directory, citizen contact information is automatically masked (e.g. `c***@domain.com`, `017****5678`).
+- Technical administrators cannot access raw citizen contact details or case evidence merely by virtue of having account-management authority.
+

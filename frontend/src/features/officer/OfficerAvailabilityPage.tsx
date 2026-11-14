@@ -4,9 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { toBanglaNumber } from '../../utils/formatters';
 import {
   UserCheck,
-  Clock,
   AlertTriangle,
-  Sliders,
   CheckCircle2,
   RefreshCw,
   Users,
@@ -76,31 +74,31 @@ export const OfficerAvailabilityPage: React.FC = () => {
     switch (status) {
       case 'available':
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#1c2b20] text-[#4b9e78] border border-[#295e42]">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--status-low-bg)] text-[var(--status-low)] border border-[var(--status-low-border)]">
             উপলব্ধ (Available)
           </span>
         );
       case 'busy':
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#2f2f41] text-[#8f92b3] border border-[#52526e]">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--paper-elevated)] text-[var(--muted)] border border-[var(--line)]">
             ব্যস্ত (At Capacity)
           </span>
         );
       case 'on_leave':
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#373224] text-[#d4c19a] border-[#6b5c3e] border">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--status-high-bg)] text-[var(--status-high)] border border-[var(--status-high-border)]">
             ছুটিতে (On Leave)
           </span>
         );
       case 'offline':
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#151a16] text-[#a7b0a8] border border-[#343d34]">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--paper-elevated)] text-[var(--muted)] border border-[var(--line)]">
             অফলাইন (Offline)
           </span>
         );
       default:
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#151a16] text-[#a7b0a8] border border-[#343d34]">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--paper-elevated)] text-[var(--muted)] border border-[var(--line)]">
             {status}
           </span>
         );
@@ -108,18 +106,18 @@ export const OfficerAvailabilityPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1540px] mx-auto px-4 sm:px-8 py-8 space-y-8 animate-in fade-in duration-200">
+    <div className="max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 animate-in fade-in duration-150">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#343d34]">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1b221c] border border-[#343d34] text-[#d4c19a] text-xs font-mono tracking-widest uppercase mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#d4c19a]" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--line)]">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[var(--paper-elevated)] border border-[var(--line)] text-[var(--ink)] text-xs font-mono tracking-wider uppercase font-semibold">
+            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
             <span>{currentUser?.departmentName || 'ড্রেনেজ ও পয়ঃনিষ্কাশন বিভাগ'}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-light text-[#eeeee6]">
-            কর্মকর্তার প্রাপ্যতা ও <strong className="font-semibold text-[#d4c19a]">সক্ষমতা নিয়ন্ত্রণ</strong>
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--ink)] tracking-tight">
+            কর্মকর্তার প্রাপ্যতা ও সক্ষমতা নিয়ন্ত্রণ
           </h1>
-          <p className="text-sm sm:text-base text-[#a7b0a8]">
+          <p className="text-xs sm:text-sm text-[var(--muted)]">
             মাঠ পর্যায়ের কর্মকর্তাদের দায়িত্ব প্রাপ্তির স্থিতি এবং এককালীন সর্বোচ্চ কাজের সীমা নির্ধারণ।
           </p>
         </div>
@@ -128,36 +126,35 @@ export const OfficerAvailabilityPage: React.FC = () => {
           type="button"
           onClick={fetchAvailability}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl bg-[var(--paper)] hover:bg-[var(--green-light)] text-[var(--ink)] border border-[var(--line)] transition cursor-pointer shadow-xs"
+          className="civic-btn-secondary text-xs py-2 px-3 self-start sm:self-auto"
         >
-          <RefreshCw className={`w-4 h-4 text-[var(--gold)] ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 text-[var(--muted)] ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
           <span>রিফ্রেশ</span>
         </button>
       </div>
 
       {successMsg && (
-        <div className="p-4 rounded-xl bg-[#1c2b20] border border-[#295e42] text-[#4b9e78] text-sm font-semibold flex items-center gap-2.5 shadow-lg animate-in fade-in">
-          <CheckCircle2 className="w-5 h-5 text-[#4b9e78] shrink-0" />
+        <div className="p-3.5 rounded-lg bg-[var(--status-low-bg)] border border-[var(--status-low-border)] text-[var(--status-low)] text-xs font-semibold flex items-center gap-2 shadow-xs animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 shrink-0" aria-hidden="true" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {error && (
-        <div className="p-4 rounded-xl bg-[#382326] border border-[#71434a] text-[#c66e60] text-sm font-semibold flex items-center gap-2.5 shadow-lg">
-          <AlertTriangle className="w-5 h-5 text-[#c66e60] shrink-0" />
+        <div className="p-3.5 rounded-lg bg-[var(--status-emergency-bg)] border border-[var(--status-emergency-border)] text-[var(--status-emergency)] text-xs font-semibold flex items-center gap-2 shadow-xs">
+          <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Policy Instruction Card */}
-      <div className="p-6 rounded-2xl bg-[#151a16] border border-[#343d34] text-sm text-[#a7b0a8] space-y-2.5 shadow-md">
-        <div className="flex items-center gap-2 font-bold text-base text-[#eeeee6]">
-          <Shield className="w-5 h-5 text-[#4b9e78]" />
+      <div className="civic-card p-4 sm:p-5 text-xs text-[var(--muted)] space-y-2 shadow-xs">
+        <div className="flex items-center gap-2 font-bold text-sm text-[var(--ink)]">
+          <Shield className="w-4 h-4 text-[var(--status-low)]" aria-hidden="true" />
           <span>প্রাপ্যতা নীতি ও স্বয়ংক্রিয় রুলস:</span>
         </div>
         <p className="leading-relaxed">
-          ১. কোনো কর্মকর্তার অ্যাকাউন্ট কেবল সক্রিয় থাকলেই তাকে স্বয়ংক্রিয়ভাবে উপলব্ধ হিসেবে বিবেচনা করা হবে না।
-          প্রকৃত ডিউটি স্ট্যাটাস এবং সক্রিয় কাজের সীমা যাচাই বাধ্যতামূলক।
+          ১. কোনো কর্মকর্তার অ্যাকাউন্ট কেবল সক্রিয় থাকলেই তাকে স্বয়ংক্রিয়ভাবে উপলব্ধ হিসেবে বিবেচনা করা হবে না। প্রকৃত ডিউটি স্ট্যাটাস এবং সক্রিয় কাজের সীমা যাচাই বাধ্যতামূলক।
         </p>
         <p className="leading-relaxed">
           ২. চলতি সক্রিয় কাজ ও সর্বোচ্চ সীমার ব্যবধান (Margin) ০ হলে কর্মকর্তা স্বয়ংক্রিয়ভাবে 'ব্যস্ত' হিসেবে বিবেচিত হবেন।
@@ -167,14 +164,13 @@ export const OfficerAvailabilityPage: React.FC = () => {
       {/* Officers List */}
       <div className="space-y-4">
         {loading ? (
-          <div className="p-16 text-center text-[#a7b0a8] rounded-2xl bg-[#151a16] border border-[#343d34] space-y-3">
-            <div className="w-9 h-9 border-2 border-[#d4c19a] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm">প্রাপ্যতা তথ্য লোড হচ্ছে...</p>
+          <div className="p-12 text-center text-[var(--muted)] civic-card">
+            প্রাপ্যতা তথ্য লোড হচ্ছে...
           </div>
         ) : officers.length === 0 ? (
-          <div className="p-16 text-center text-[#a7b0a8] rounded-2xl bg-[#151a16] border border-[#343d34]">
-            <Users className="w-12 h-12 text-[#4b9e78] mx-auto mb-2 opacity-70" />
-            <p className="text-base font-semibold text-[#eeeee6]">কোনো কর্মকর্তার তথ্য পাওয়া যায়নি</p>
+          <div className="p-12 text-center text-[var(--muted)] civic-card">
+            <Users className="w-8 h-8 text-[var(--muted)] mx-auto mb-2 opacity-60" aria-hidden="true" />
+            <p className="text-sm font-semibold text-[var(--ink)]">কোনো কর্মকর্তার তথ্য পাওয়া যায়নি</p>
           </div>
         ) : (
           officers.map(officer => {
@@ -186,41 +182,45 @@ export const OfficerAvailabilityPage: React.FC = () => {
             return (
               <div
                 key={officer.id}
-                className="p-6 sm:p-7 rounded-2xl bg-[#151a16] border border-[#343d34] hover:border-[#4b9e78] transition shadow-md space-y-5"
+                className="civic-card p-5 sm:p-6 hover:border-[var(--ink)] transition shadow-xs space-y-4"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#eeeee6]">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h3 className="text-base sm:text-lg font-bold text-[var(--ink)]">
                         {officer.name_bn || officer.id}
                       </h3>
                       {getStatusBadge(officer.availability_status)}
                     </div>
-                    <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-[#a7b0a8]">
-                      <span className="text-[#d4c19a] font-medium">
+                    <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-[var(--muted)]">
+                      <span className="font-medium text-[var(--ink)]">
                         {officer.designation_bn || 'সহকারী প্রকৌশলী'}
                       </span>
-                      <span className="flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4 text-[#4b9e78]" />
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 text-[var(--muted)]" aria-hidden="true" />
                         এখতিয়ার: {officer.ward_name_bn || 'ওয়ার্ড ৩'}
                       </span>
                       {officer.official_phone && (
-                        <span className="flex items-center gap-1.5 font-mono text-[#a7b0a8]">
-                          <Phone className="w-4 h-4 text-[#d4c19a]" />
-                          {officer.official_phone}
-                        </span>
+                        <>
+                          <span>•</span>
+                          <span className="flex items-center gap-1 font-mono">
+                            <Phone className="w-3.5 h-3.5 text-[var(--muted)]" aria-hidden="true" />
+                            {officer.official_phone}
+                          </span>
+                        </>
                       )}
                     </div>
                   </div>
 
                   {/* Quick Status Selector */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-[#a7b0a8]">স্থিতি পরিবর্তন:</span>
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <span className="text-xs font-semibold text-[var(--muted)]">স্থিতি:</span>
                     <select
                       value={officer.availability_status}
                       disabled={isUpdating}
                       onChange={e => handleStatusChange(officer.id, e.target.value, maxTasks)}
-                      className="px-4 py-2.5 text-sm font-semibold rounded-xl bg-[#0d100e] text-[#eeeee6] border border-[#343d34] focus:border-[#d4c19a] focus:outline-none cursor-pointer"
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--paper-elevated)] text-[var(--ink)] border border-[var(--line)] focus:outline-none focus:border-[var(--accent)] cursor-pointer"
                     >
                       <option value="available">উপলব্ধ (Available)</option>
                       <option value="busy">ব্যস্ত (At Capacity)</option>
@@ -232,34 +232,34 @@ export const OfficerAvailabilityPage: React.FC = () => {
                 </div>
 
                 {/* Capacity Progress Bar and Slider */}
-                <div className="p-5 bg-[#0d100e] rounded-xl border border-[#242c24] space-y-3.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-semibold text-[#eeeee6] flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-[#4b9e78]" />
+                <div className="p-4 bg-[var(--paper-elevated)] rounded-lg border border-[var(--line)] space-y-2.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-[var(--ink)] flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-[var(--muted)]" aria-hidden="true" />
                       <span>চলতি কাজের চাপ ও সক্ষমতা ব্যবহার:</span>
                     </span>
-                    <span className="font-bold text-[#d4c19a] font-mono text-base">
+                    <span className="font-bold text-[var(--ink)] font-mono text-xs">
                       {toBanglaNumber(currentTasks)} / {toBanglaNumber(maxTasks)} টি কাজ ({toBanglaNumber(capacityPercent)}%)
                     </span>
                   </div>
 
                   {/* Progress bar */}
-                  <div className="w-full bg-[#1b221c] rounded-full h-3 overflow-hidden border border-[#343d34]">
+                  <div className="w-full bg-[var(--paper)] rounded-full h-2.5 overflow-hidden border border-[var(--line)]">
                     <div
-                      className={`h-3 rounded-full transition-all duration-300 ${
+                      className={`h-2.5 rounded-full transition-all duration-300 ${
                         capacityPercent >= 100
-                          ? 'bg-[#c66e60]'
+                          ? 'bg-[var(--status-emergency)]'
                           : capacityPercent >= 70
-                          ? 'bg-[#d8a155]'
-                          : 'bg-[#4b9e78]'
+                          ? 'bg-[var(--status-high)]'
+                          : 'bg-[var(--ink)]'
                       }`}
                       style={{ width: `${capacityPercent}%` }}
                     />
                   </div>
 
                   {/* Capacity Slider Control */}
-                  <div className="flex flex-wrap items-center gap-4 pt-1">
-                    <label className="text-sm text-[#eeeee6] shrink-0 font-medium">
+                  <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
+                    <label className="text-xs text-[var(--muted)] shrink-0 font-medium">
                       সর্বোচ্চ সক্ষমতা সীমা (Max Concurrent Tasks):
                     </label>
                     <input
@@ -269,9 +269,9 @@ export const OfficerAvailabilityPage: React.FC = () => {
                       value={maxTasks}
                       disabled={isUpdating}
                       onChange={e => handleCapacityChange(officer.id, officer.availability_status, parseInt(e.target.value))}
-                      className="w-56 accent-[#d4c19a] cursor-pointer"
+                      className="w-48 accent-[var(--accent)] cursor-pointer"
                     />
-                    <span className="text-sm font-bold text-[#d4c19a] font-mono w-8 text-center bg-[#151a16] py-1 rounded-lg border border-[#343d34]">
+                    <span className="text-xs font-bold text-[var(--ink)] font-mono w-7 text-center bg-[var(--paper)] py-0.5 rounded border border-[var(--line)]">
                       {toBanglaNumber(maxTasks)}
                     </span>
                   </div>

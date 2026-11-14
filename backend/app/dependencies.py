@@ -33,6 +33,7 @@ async def get_current_user_optional(
     return user
 
 async def get_current_user(
+    token: Optional[str] = Depends(oauth2_scheme),
     user: Optional[User] = Depends(get_current_user_optional)
 ) -> User:
     if not user:
@@ -41,11 +42,24 @@ async def get_current_user(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not user.is_active:
+    if not user.is_active or user.account_status in ["suspended", "deactivated"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Inactive account"
+            detail="অ্যাকাউন্টটি বর্তমানে নিষ্ক্রিয় বা সাময়িক স্থগিত অবস্থায় রয়েছে।"
         )
+    if user.sessions_revoked_at and token:
+        import datetime
+        payload = decode_token(token)
+        if payload and payload.get("iat") is not None:
+            rev_dt = user.sessions_revoked_at
+            if rev_dt.tzinfo is None:
+                rev_dt = rev_dt.replace(tzinfo=datetime.timezone.utc)
+            revoked_ts = float(rev_dt.timestamp())
+            if float(payload.get("iat")) < revoked_ts:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="নিরাপত্তাজনিত কারণে সেশনটি বাতিল করা হয়েছে। অনুগ্রহ করে পুনরায় লগইন করুন।"
+                )
     return user
 
 def require_roles(allowed_roles: List[UserRoleEnum]):

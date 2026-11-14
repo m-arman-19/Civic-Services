@@ -10,7 +10,7 @@ from app.models.service import ServiceCatalog, ServiceDocument, ServiceDocumentC
 from app.models.case import Case, CaseReport, CaseTask, CaseStatusEnum, PriorityEnum, TaskStatusEnum, CaseStatusHistory
 from app.models.evidence import CaseEvidence, EvidenceTypeEnum, CaseFeedback
 from app.models.sla import SLAPolicy, SLAStepEnum
-from app.models.system import SystemConfig
+from app.models.system import SystemConfig, PolicyChangeRequest, PolicyChangeCategoryEnum, PolicyApprovalStateEnum, PolicyImplementationStateEnum
 from app.core.security import get_password_hash
 from app.core.audit import AuditLogger
 
@@ -132,9 +132,10 @@ async def seed_all(engine=None, session_maker=None):
         db.add_all([sc_waste, sc_drain, sc_license])
         await db.flush()
 
-        # 10. Demo Users (All 5 Roles per R&D Section 11.2)
+        # 10. Demo Users (All 6 Roles: 5 Original R&D + 6th City Governance Head)
         pwd_hash = get_password_hash("Pass1234!")
         admin_pwd_hash = get_password_hash("AdminPass1234!")
+        gov_pwd_hash = get_password_hash("GovPass1234!")
 
         u_citizen = User(phone="01711000001", email="citizen@nagoriksathi.gov.bd", hashed_password=pwd_hash, full_name="কাজী মুশফিকুর রহমান", role=UserRoleEnum.CITIZEN, is_active=True, is_verified=True, preferred_language="bn")
         u_warddesk = User(phone="01711000002", email="warddesk@nagoriksathi.gov.bd", hashed_password=pwd_hash, full_name="মোহাম্মদ আবুল কালাম (ওয়ার্ড ডেস্ক কর্মকর্তা)", role=UserRoleEnum.WARD_DESK, is_active=True, is_verified=True, preferred_language="bn")
@@ -142,8 +143,9 @@ async def seed_all(engine=None, session_maker=None):
         u_officer_waste = User(phone="01711000004", email="officer_waste@nagoriksathi.gov.bd", hashed_password=pwd_hash, full_name="প্রকৌশলী রফিকুল ইসলাম", role=UserRoleEnum.DEPT_OFFICER, is_active=True, is_verified=True, preferred_language="bn")
         u_coordinator = User(phone="01711000005", email="coordinator@nagoriksathi.gov.bd", hashed_password=pwd_hash, full_name="ড. ফারহানা হক (প্রধান সমন্বয়কারী)", role=UserRoleEnum.COORDINATOR, is_active=True, is_verified=True, preferred_language="bn")
         u_admin = User(phone="01711000006", email="admin@nagoriksathi.gov.bd", hashed_password=admin_pwd_hash, full_name="মো. হাসিবুল হাসান (সিস্টেম অ্যাডমিনিস্ট্রেটর)", role=UserRoleEnum.ADMIN, is_active=True, is_verified=True, preferred_language="bn")
+        u_governance = User(phone="01711000007", email="governance@nagoriksathi.gov.bd", hashed_password=gov_pwd_hash, full_name="নাসরিন সুলতানা (সিটি গভর্নেন্স প্রধান / সচিব)", role=UserRoleEnum.GOVERNANCE_HEAD, is_active=True, is_verified=True, preferred_language="bn")
         
-        db.add_all([u_citizen, u_warddesk, u_officer_drain, u_officer_waste, u_coordinator, u_admin])
+        db.add_all([u_citizen, u_warddesk, u_officer_drain, u_officer_waste, u_coordinator, u_admin, u_governance])
         await db.flush()
 
         # Link Scopes
@@ -151,7 +153,49 @@ async def seed_all(engine=None, session_maker=None):
         s_off_drain = UserScope(user_id=u_officer_drain.id, department_id=d_drain.id, ward_id=w3.id)
         s_off_waste = UserScope(user_id=u_officer_waste.id, department_id=d_waste.id, ward_id=w3.id)
         s_coordinator = UserScope(user_id=u_coordinator.id, jurisdiction_zone="ALL_ZONES")
-        db.add_all([s_warddesk, s_off_drain, s_off_waste, s_coordinator])
+        s_governance = UserScope(user_id=u_governance.id, jurisdiction_zone="MUNICIPAL_WIDE")
+        db.add_all([s_warddesk, s_off_drain, s_off_waste, s_coordinator, s_governance])
+
+        # Demo Policy Change Requests (Dual Approval Lifecycle)
+        pcr1 = PolicyChangeRequest(
+            change_category="AI_CONFIDENCE_GATE",
+            current_configuration={"threshold": 0.80},
+            proposed_configuration={"threshold": 0.75},
+            current_version="1.0",
+            proposed_version="1.1",
+            reason="বর্ষা মৌসুমে জলাবদ্ধতা ও ড্রেন ব্লকেজ দ্রুত শনাক্তকরণে ফিল্টার সীমা শিথিলকরণ প্রস্তাব।",
+            requesting_user_id=u_admin.id,
+            admin_decision="approved",
+            admin_decided_at=datetime.datetime.utcnow(),
+            admin_user_id=u_admin.id,
+            admin_notes="প্রযুক্তিগত লোড ব্যালেন্স ও ইনফারেন্স সার্ভার সক্ষমতা যাচাই সম্পন্ন।",
+            governance_head_decision="pending",
+            approval_state="pending_governance_approval",
+            implementation_state="pending",
+            validation_results={"revalidation_status": "ready", "held_out_accuracy": 0.89}
+        )
+        pcr2 = PolicyChangeRequest(
+            change_category="TASK_SEQUENCING_RULE",
+            current_configuration={"primary": "waste", "then": "drain", "then": "road"},
+            proposed_configuration={"primary": "waste", "then": "drain", "then": "road", "mandatory_before_after_photo": True},
+            current_version="1.1",
+            proposed_version="1.2",
+            reason="ড্রেন সংস্কারে আগে রাস্তা খোঁড়া সম্পূর্ণ নিষিদ্ধকরণ এবং বাধ্যতামূলক প্রমাণক সংগ্রহ।",
+            requesting_user_id=u_governance.id,
+            admin_decision="approved",
+            admin_decided_at=datetime.datetime.utcnow(),
+            admin_user_id=u_admin.id,
+            admin_notes="সিস্টেম ওয়ার্কফ্লো ইঞ্জিন রুল ইঞ্জিন ৩.২ এর সাথে সামঞ্জস্যপূর্ণ।",
+            governance_head_decision="approved",
+            governance_head_decided_at=datetime.datetime.utcnow(),
+            governance_head_user_id=u_governance.id,
+            governance_head_notes="পৌরসভা নির্বাহী কমিটির সিদ্ধান্ত নং-৭ অনুযায়ী অনুমোদিত।",
+            approval_state="approved",
+            implementation_state="applied",
+            effective_time=datetime.datetime.utcnow(),
+            validation_results={"syntax_valid": True, "circular_dependency_check": "PASSED"}
+        )
+        db.add_all([pcr1, pcr2])
 
         # Citizen Profile
         cp = CitizenProfile(user_id=u_citizen.id, address_line="হাতেম আলী লেইন, পাঁচলাইশ, চট্টগ্রাম", ward_id=w3.id)

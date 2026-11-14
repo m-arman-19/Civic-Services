@@ -12,7 +12,7 @@ from app.routers import (
     auth, cases, tasks, evidence, ai,
     duplicates, hotspots, services, knowledge,
     officers, departments, wards, assets,
-    notifications, audit, admin, public, open311
+    notifications, audit, admin, governance, public, open311
 )
 
 from contextlib import asynccontextmanager
@@ -73,6 +73,7 @@ app.include_router(assets.router, prefix=settings.API_V1_STR)
 app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(audit.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
+app.include_router(governance.router, prefix=settings.API_V1_STR)
 app.include_router(public.router, prefix=settings.API_V1_STR)
 app.include_router(open311.router, prefix=settings.API_V1_STR)
 

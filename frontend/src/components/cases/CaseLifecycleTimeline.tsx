@@ -15,29 +15,29 @@ export const CaseLifecycleTimeline: React.FC<CaseLifecycleTimelineProps> = ({
 }) => {
   const getBadgeIcon = (event: CaseLifecycleEvent) => {
     if (event.actionTitle.includes('AI') || event.actionTitle.includes('এআই')) {
-      return <Sparkles className="w-3.5 h-3.5 text-[#d4c19a]" />;
+      return <Sparkles className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />;
     }
     if (event.stage === 'reopened') {
-      return <AlertCircle className="w-3.5 h-3.5 text-[#c66e60]" />;
+      return <AlertCircle className="w-3.5 h-3.5 text-rose-700 dark:text-rose-400" />;
     }
     if (event.stage === 'closed') {
-      return <CheckCircle2 className="w-3.5 h-3.5 text-[#4b9e78]" />;
+      return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />;
     }
     if (event.stage === 'verified') {
-      return <UserCheck className="w-3.5 h-3.5 text-[#8f92b3]" />;
+      return <UserCheck className="w-3.5 h-3.5 text-sky-700 dark:text-sky-400" />;
     }
-    return <Clock className="w-3.5 h-3.5 text-[#a7b0a8]" />;
+    return <Clock className="w-3.5 h-3.5 text-[var(--muted)]" />;
   };
 
   return (
     <div className="rounded-2xl p-5 bg-[var(--paper)] border border-[var(--line)] shadow-xs">
       <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[var(--line)]">
-        <h3 className="text-sm font-semibold text-[var(--ink)] flex items-center gap-2">
-          <Clock className="w-4 h-4 text-[var(--gold)]" />
+        <h3 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[var(--ink)]" />
           <span>অভিযোগের জীবন্ত অগ্রগতি পরিক্রমা (Live Timeline)</span>
         </h3>
         <span className="text-xs text-[var(--muted)] font-medium">
-          বর্তমান অবস্থা: <strong className="text-[var(--green)] font-bold">{STATUS_CONFIG[currentStatus]?.label || currentStatus}</strong>
+          বর্তমান অবস্থা: <strong className="text-[var(--ink)] font-bold">{STATUS_CONFIG[currentStatus]?.label || currentStatus}</strong>
         </span>
       </div>
 
@@ -72,9 +72,9 @@ export const CaseLifecycleTimeline: React.FC<CaseLifecycleTimelineProps> = ({
 
                 <p className="text-xs text-[var(--muted)] leading-relaxed">{event.actionDescription}</p>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-[var(--line)] text-[11px] text-[var(--muted)]">
+                <div className="flex items-center gap-2 pt-2 border-t border-[var(--line)] text-[11px] text-[var(--muted)] font-medium">
                   <span>কর্মকর্তা/সূত্র:</span>
-                  <span className="font-semibold text-[var(--gold)] bg-[var(--paper)] px-2 py-0.5 rounded border border-[var(--line)]">
+                  <span className="font-bold text-[var(--ink)] bg-[var(--paper)] px-2 py-0.5 rounded border border-[var(--line)]">
                     {event.actorName}
                   </span>
                 </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Home, PlusCircle, FileText, MapPin, Layers, Wrench, Shield } from 'lucide-react';
+import { Home, Plus, FileText, MapPin, Layers, Wrench, Shield } from 'lucide-react';
 
 export const MobileNav: React.FC = () => {
   const { activeRole } = useAuth();
@@ -15,30 +15,30 @@ export const MobileNav: React.FC = () => {
     switch (activeRole) {
       case 'ward_desk':
         return [
-          { label: 'ড্যাশবোর্ড', path: '/ward', icon: <Layers className="w-5 h-5" /> },
-          { label: 'যাচাই কিউ', path: '/ward/verification', icon: <Shield className="w-5 h-5" /> },
-          { label: 'ম্যাপ', path: '/map', icon: <MapPin className="w-5 h-5" /> },
-          { label: 'ডুপ্লিকেট', path: '/ward/duplicates', icon: <FileText className="w-5 h-5" /> }
+          { label: 'ড্যাশবোর্ড', path: '/ward', icon: <Layers className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'যাচাই কিউ', path: '/ward/verification', icon: <Shield className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'ম্যাপ', path: '/map', icon: <MapPin className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'ডুপ্লিকেট', path: '/ward/duplicates', icon: <FileText className="w-4 h-4" aria-hidden="true" /> }
         ];
       case 'field_officer':
         return [
-          { label: 'আমার কাজ', path: '/officer', icon: <Wrench className="w-5 h-5" /> },
-          { label: 'ম্যাপ', path: '/map', icon: <MapPin className="w-5 h-5" /> },
-          { label: 'বিজ্ঞপ্তি', path: '/notifications', icon: <FileText className="w-5 h-5" /> }
+          { label: 'আমার কাজ', path: '/officer', icon: <Wrench className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'ম্যাপ', path: '/map', icon: <MapPin className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'বিজ্ঞপ্তি', path: '/notifications', icon: <FileText className="w-4 h-4" aria-hidden="true" /> }
         ];
       case 'coordinator':
         return [
-          { label: 'কমান্ড', path: '/coordinator', icon: <Layers className="w-5 h-5" /> },
-          { label: 'হটস্পট', path: '/coordinator/hotspots', icon: <MapPin className="w-5 h-5" /> },
-          { label: 'এসএলএ', path: '/coordinator/escalations', icon: <Shield className="w-5 h-5" /> }
+          { label: 'কমান্ড', path: '/coordinator', icon: <Layers className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'হটস্পট', path: '/coordinator/hotspots', icon: <MapPin className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'এসএলএ', path: '/coordinator/escalations', icon: <Shield className="w-4 h-4" aria-hidden="true" /> }
         ];
       default: // citizen
         return [
-          { label: 'হোম', path: '/', icon: <Home className="w-5 h-5" /> },
-          { label: 'অভিযোগ', path: '/cases', icon: <FileText className="w-5 h-5" /> },
-          { label: 'সমস্যা জানান', path: '/report', icon: <PlusCircle className="w-6 h-6 text-emerald-600" />, isFab: true },
-          { label: 'ম্যাপ', path: '/map', icon: <MapPin className="w-5 h-5" /> },
-          { label: 'সেবাসমূহ', path: '/services', icon: <Layers className="w-5 h-5" /> }
+          { label: 'হোম', path: '/', icon: <Home className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'অভিযোগ', path: '/cases', icon: <FileText className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'সমস্যা জানান', path: '/report', icon: <Plus className="w-5 h-5" aria-hidden="true" />, isFab: true },
+          { label: 'ম্যাপ', path: '/map', icon: <MapPin className="w-4 h-4" aria-hidden="true" /> },
+          { label: 'সেবাসমূহ', path: '/services', icon: <Layers className="w-4 h-4" aria-hidden="true" /> }
         ];
     }
   };
@@ -46,7 +46,7 @@ export const MobileNav: React.FC = () => {
   const tabs = getMobileTabs();
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-lg">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--paper)]/95 backdrop-blur-md border-t border-[var(--line)] px-2 py-1 shadow-md" aria-label="Mobile Navigation">
       <div className="flex items-center justify-around">
         {tabs.map(tab => {
           const isActive = location.pathname === tab.path;
@@ -55,12 +55,13 @@ export const MobileNav: React.FC = () => {
               <Link
                 key={tab.path}
                 to={tab.path}
-                className="flex flex-col items-center justify-center -mt-5"
+                className="flex flex-col items-center justify-center -mt-4 group"
+                aria-label={tab.label}
               >
-                <div className="w-12 h-12 rounded-full bg-emerald-700 text-white flex items-center justify-center shadow-lg border-4 border-white transition transform active:scale-95">
-                  <PlusCircle className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-full bg-[var(--accent)] text-[var(--accent-fg)] flex items-center justify-center shadow-md border-2 border-[var(--paper)] transition transform active:scale-95 group-hover:opacity-90">
+                  {tab.icon}
                 </div>
-                <span className="text-[10px] font-semibold text-emerald-800 mt-0.5">{tab.label}</span>
+                <span className="text-[10px] font-bold text-[var(--ink)] mt-0.5">{tab.label}</span>
               </Link>
             );
           }
@@ -69,9 +70,10 @@ export const MobileNav: React.FC = () => {
             <Link
               key={tab.path}
               to={tab.path}
-              className={`flex flex-col items-center py-1 px-2.5 rounded-lg transition ${
-                isActive ? 'text-emerald-700 font-semibold' : 'text-slate-500 hover:text-slate-800'
+              className={`flex flex-col items-center py-1 px-2 rounded-md transition ${
+                isActive ? 'text-[var(--ink)] font-bold' : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
+              aria-current={isActive ? 'page' : undefined}
             >
               {tab.icon}
               <span className="text-[10px] mt-0.5">{tab.label}</span>
@@ -79,6 +81,6 @@ export const MobileNav: React.FC = () => {
           );
         })}
       </div>
-    </div>
+    </nav>
   );
 };

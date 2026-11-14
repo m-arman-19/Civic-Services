@@ -28,21 +28,21 @@ const TRANSPARENCY_KPIS = [
     valueBn: '৩,০৬০',
     subBn: '৯৪.২% সফল সমাধান হার',
     changeBn: 'নাগরিক যাচাইকৃত',
-    colorClass: 'text-[#4b9e78]'
+    colorClass: 'text-emerald-800 dark:text-emerald-300'
   },
   {
     titleBn: 'গড় সমাধান সময়',
     valueBn: '৬.৪ ঘণ্টা',
     subBn: 'জরুরি ক্ষেত্রে ২.১ ঘণ্টা',
     changeBn: 'এসএলএ অনুবর্তন ৯৬.৫%',
-    colorClass: 'text-[#d4c19a]'
+    colorClass: 'text-amber-800 dark:text-amber-300'
   },
   {
     titleBn: 'সক্রিয় দীর্ঘস্থায়ী হটস্পট',
     valueBn: '৪ টি',
     subBn: 'পুনরাবৃত্তিমূলক ক্লাস্টার',
     changeBn: 'বিশেষ নজরদারি চলমান',
-    colorClass: 'text-[#c66e60]'
+    colorClass: 'text-rose-800 dark:text-rose-300'
   }
 ];
 
@@ -67,12 +67,12 @@ export const PublicTransparencyPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[var(--line)]">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-mono tracking-widest text-[var(--gold)] uppercase font-semibold">
+            <span className="text-xs font-mono tracking-widest text-[var(--muted)] uppercase font-semibold">
               OPEN CIVIC GOVERNANCE & ACCOUNTABILITY
             </span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-[var(--ink)] tracking-tight">
-            নাগরিক সেবা স্বচ্ছতা ও <strong className="font-extrabold text-[var(--gold)]">পৌর কর্মক্ষমতা ড্যাশবোর্ড</strong>
+            নাগরিক সেবা স্বচ্ছতা ও <span className="font-light text-[var(--muted)]">পৌর কর্মক্ষমতা ড্যাশবোর্ড</span>
           </h1>
           <p className="text-sm sm:text-base text-[var(--muted)] mt-2 max-w-3xl leading-relaxed">
             সিটি কর্পোরেশনের সকল নাগরিক অভিযোগের সার্বিক অগ্রগতি, বিভাগীয় কর্মক্ষমতা, এসএলএ লক্ষ্যমাত্রা এবং ওয়ার্ডভিত্তিক পারফরম্যান্স পরিসংখ্যান সবার জন্য উন্মুক্ত।
@@ -80,8 +80,8 @@ export const PublicTransparencyPage: React.FC = () => {
         </div>
 
         {/* PII Shield Compliance Badge */}
-        <div className="bg-[var(--paper)] border border-[var(--line)] px-4 py-3 rounded-2xl flex items-center gap-3 shadow-md shrink-0">
-          <ShieldCheck className="w-5 h-5 text-[var(--green)] shrink-0" />
+        <div className="bg-[var(--paper)] border border-[var(--line)] px-4 py-3 rounded-2xl flex items-center gap-3 shadow-xs shrink-0">
+          <ShieldCheck className="w-5 h-5 text-[var(--ink)] shrink-0" />
           <div className="text-left text-xs">
             <strong className="text-[var(--ink)] block font-bold">PII প্রাইভেসি শিল্ড সক্রিয়</strong>
             <span className="text-xs text-[var(--muted)]">ব্যক্তিগত পরিচয় ও ফোন নম্বর স্বয়ংক্রিয়ভাবে গোপন</span>
@@ -94,18 +94,18 @@ export const PublicTransparencyPage: React.FC = () => {
         {TRANSPARENCY_KPIS.map((kpi, idx) => (
           <div
             key={idx}
-            className="rounded-2xl p-6 border border-[var(--line)] bg-[var(--paper)] space-y-3 hover:border-[var(--gold)] transition shadow-lg"
+            className="rounded-2xl p-6 border border-[var(--line)] bg-[var(--paper)] space-y-3 hover:border-[var(--line-strong)] transition shadow-xs"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-[var(--muted)]">{kpi.titleBn}</span>
               <BarChart3 className="w-4.5 h-4.5 text-[var(--muted)]" />
             </div>
-            <div className={`text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-[var(--ink)]`}>
+            <div className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-[var(--ink)]">
               {kpi.valueBn}
             </div>
             <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--line)]">
               <span className="text-[var(--muted)] font-mono">{kpi.subBn}</span>
-              <span className="text-[var(--gold)] font-medium">{kpi.changeBn}</span>
+              <span className="text-[var(--ink)] font-medium">{kpi.changeBn}</span>
             </div>
           </div>
         ))}
@@ -114,10 +114,10 @@ export const PublicTransparencyPage: React.FC = () => {
       {/* 2. Department Performance & SLA Breakdown */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Department Table */}
-        <div className="lg:col-span-8 rounded-2xl p-6 sm:p-7 border border-[var(--line)] bg-[var(--paper)] space-y-5 shadow-xl">
+        <div className="lg:col-span-8 rounded-2xl p-6 sm:p-7 border border-[var(--line)] bg-[var(--paper)] space-y-5 shadow-xs">
           <div className="flex items-center justify-between pb-4 border-b border-[var(--line)]">
             <div className="flex items-center gap-2.5">
-              <Layers className="w-5 h-5 text-[var(--gold)]" />
+              <Layers className="w-5 h-5 text-[var(--ink)]" />
               <h2 className="text-base sm:text-lg font-bold text-[var(--ink)]">
                 বিভাগভিত্তিক অভিযোগ ও সমাধান কর্মক্ষমতা
               </h2>
@@ -138,12 +138,12 @@ export const PublicTransparencyPage: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-[var(--line)]">
                 {DEPARTMENT_PERFORMANCE.map((dept, idx) => (
-                  <tr key={idx} className="hover:bg-[var(--green-light)] transition cursor-pointer">
+                  <tr key={idx} className="hover:bg-[var(--paper-elevated)] transition cursor-pointer">
                     <td className="py-4 px-3 font-semibold text-[var(--ink)]">{dept.nameBn}</td>
                     <td className="py-4 px-3 text-right font-mono text-[var(--muted)]">{toBanglaNumber(dept.cases)}</td>
                     <td className="py-4 px-3 text-right font-mono text-[var(--muted)]">{toBanglaNumber(dept.resolved)}</td>
-                    <td className="py-4 px-3 text-right font-bold text-[var(--green)] font-mono">{dept.rate}</td>
-                    <td className="py-4 px-3 text-right font-bold text-[var(--gold)] font-mono">{dept.avgHours}</td>
+                    <td className="py-4 px-3 text-right font-bold text-[var(--status-low)] font-mono">{dept.rate}</td>
+                    <td className="py-4 px-3 text-right font-bold text-[var(--ink)] font-mono">{dept.avgHours}</td>
                   </tr>
                 ))}
               </tbody>
@@ -152,9 +152,9 @@ export const PublicTransparencyPage: React.FC = () => {
         </div>
 
         {/* SLA Compliance Ladder Overview */}
-        <div className="lg:col-span-4 rounded-2xl p-6 sm:p-7 border border-[var(--line)] bg-[var(--paper)] space-y-5 shadow-xl">
+        <div className="lg:col-span-4 rounded-2xl p-6 sm:p-7 border border-[var(--line)] bg-[var(--paper)] space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5 pb-4 border-b border-[var(--line)]">
-            <Clock className="w-5 h-5 text-[var(--gold)]" />
+            <Clock className="w-5 h-5 text-[var(--ink)]" />
             <h3 className="text-base font-bold text-[var(--ink)]">
               এসএলএ (SLA) অনুবর্তন স্তর
             </h3>
@@ -163,40 +163,40 @@ export const PublicTransparencyPage: React.FC = () => {
           <div className="space-y-4 text-sm">
             <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--line)] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-red-600 dark:text-[#e8b6b8] flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                <span className="font-semibold text-[var(--status-emergency)] flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--status-emergency)]" />
                   <span>জরুরি হ্যাজার্ড (৬ ঘণ্টা)</span>
                 </span>
                 <span className="font-bold text-[var(--ink)] font-mono">৯৮.৪%</span>
               </div>
               <div className="w-full bg-[var(--line)] h-2.5 rounded-full overflow-hidden">
-                <div className="bg-red-500 h-full rounded-full" style={{ width: '98.4%' }} />
+                <div className="bg-[var(--status-emergency)] h-full rounded-full" style={{ width: '98.4%' }} />
               </div>
             </div>
 
             <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--line)] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-[var(--gold)] flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--gold)]" />
+                <span className="font-semibold text-[var(--status-high)] flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--status-high)]" />
                   <span>উচ্চ অগ্রাধিকার (২৪ ঘণ্টা)</span>
                 </span>
                 <span className="font-bold text-[var(--ink)] font-mono">৯৫.১%</span>
               </div>
               <div className="w-full bg-[var(--line)] h-2.5 rounded-full overflow-hidden">
-                <div className="bg-[var(--gold)] h-full rounded-full" style={{ width: '95.1%' }} />
+                <div className="bg-[var(--status-high)] h-full rounded-full" style={{ width: '95.1%' }} />
               </div>
             </div>
 
             <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--line)] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-[var(--green)] flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--green)]" />
+                <span className="font-semibold text-[var(--status-low)] flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--status-low)]" />
                   <span>সাধারণ সংস্কার (৭২ ঘণ্টা)</span>
                 </span>
                 <span className="font-bold text-[var(--ink)] font-mono">৯১.৮%</span>
               </div>
               <div className="w-full bg-[var(--line)] h-2.5 rounded-full overflow-hidden">
-                <div className="bg-[var(--green)] h-full rounded-full" style={{ width: '91.8%' }} />
+                <div className="bg-[var(--status-low)] h-full rounded-full" style={{ width: '91.8%' }} />
               </div>
             </div>
           </div>
@@ -204,10 +204,10 @@ export const PublicTransparencyPage: React.FC = () => {
       </section>
 
       {/* 3. Ward Leaderboard */}
-      <section className="rounded-2xl p-6 sm:p-7 border border-[var(--line)] bg-[var(--paper)] space-y-5 shadow-xl">
+      <section className="rounded-2xl p-6 sm:p-7 border border-[var(--line)] bg-[var(--paper)] space-y-5 shadow-xs">
         <div className="flex items-center justify-between pb-4 border-b border-[var(--line)]">
           <div className="flex items-center gap-2.5">
-            <Award className="w-5 h-5 text-[var(--gold)]" />
+            <Award className="w-5 h-5 text-[var(--ink)]" />
             <h2 className="text-base sm:text-lg font-bold text-[var(--ink)]">
               ওয়ার্ডভিত্তিক নাগরিক সেবা রেটিং ও পারফরম্যান্স
             </h2>
@@ -219,22 +219,22 @@ export const PublicTransparencyPage: React.FC = () => {
           {WARD_LEADERBOARD.map((ward, idx) => (
             <div
               key={idx}
-              className="p-5 rounded-2xl bg-[var(--bg)] border border-[var(--line)] space-y-3 hover:border-[var(--gold)] hover:bg-[var(--green-light)] transition shadow-md cursor-pointer"
+              className="p-5 rounded-2xl bg-[var(--bg)] border border-[var(--line)] space-y-3 hover:border-[var(--line-strong)] hover:bg-[var(--paper-elevated)] transition shadow-xs cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-[var(--ink)]">{ward.wardBn}</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-[var(--paper)] text-[var(--gold)] font-mono border border-[var(--line)]">
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-[var(--paper)] text-[var(--ink)] font-mono border border-[var(--line)]">
                   {ward.status}
                 </span>
               </div>
               <div className="space-y-2 text-sm text-[var(--muted)]">
                 <div className="flex items-center justify-between">
                   <span>অভিযোগ নিষ্পত্তি:</span>
-                  <strong className="text-[var(--green)] font-mono">{ward.rate}</strong>
+                  <strong className="text-[var(--status-low)] font-mono">{ward.rate}</strong>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>নাগরিক রেটিং:</span>
-                  <strong className="text-[var(--gold)] font-mono">{ward.rating}</strong>
+                  <strong className="text-[var(--ink)] font-mono">{ward.rating}</strong>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>মোট অভিযোগ:</span>
@@ -249,7 +249,7 @@ export const PublicTransparencyPage: React.FC = () => {
       {/* 4. Tamper-Proof Cryptographic Verification Seal */}
       <section className="p-5 rounded-2xl bg-[var(--paper)] border border-[var(--line)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)]">
         <div className="flex items-center gap-3">
-          <FileCheck2 className="w-5 h-5 text-[var(--green)] shrink-0" />
+          <FileCheck2 className="w-5 h-5 text-[var(--ink)] shrink-0" />
           <div>
             <strong className="text-[var(--ink)] block text-sm">ক্রিপ্টোগ্রাফিক অপরিবর্তনীয় অডিট হ্যাশ চেইন নিশ্চিতকরণ</strong>
             <p className="text-[11px] text-[var(--muted)] mt-0.5">
@@ -257,7 +257,7 @@ export const PublicTransparencyPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="font-mono text-[11px] px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--gold)] font-bold">
+        <div className="font-mono text-[11px] px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] font-bold">
           HASH: e9f8...2a1c · VERIFIED
         </div>
       </section>

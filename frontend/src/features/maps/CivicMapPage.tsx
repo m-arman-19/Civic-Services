@@ -419,46 +419,46 @@ export const CivicMapPage: React.FC = () => {
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 animate-in fade-in duration-200">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#343d34]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--line)]">
         <div>
           <div className="flex items-center gap-2.5 mb-2">
-            <span className="text-xs font-mono tracking-widest text-[#d4c19a] bg-[#1b221c] px-3.5 py-1 rounded-full border border-[#343d34] uppercase font-semibold">
+            <span className="text-xs font-mono tracking-widest text-[var(--muted)] bg-[var(--paper)] px-3.5 py-1 rounded-full border border-[var(--line)] uppercase font-semibold">
               GEOSPATIAL TRANSPARENCY & LIVE INCIDENT RADAR
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#eeeee6] tracking-tight">
-            নগর জনসেবা মানচিত্র · <strong className="font-extrabold text-[#d4c19a]">Live Dhaka City Map</strong>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] tracking-tight">
+            নগর জনসেবা মানচিত্র · <span className="font-light text-[var(--muted)]">Live Dhaka City Map</span>
           </h1>
-          <p className="text-sm text-[#a7b0a8] mt-1.5 leading-relaxed">
+          <p className="text-sm text-[var(--muted)] mt-1.5 leading-relaxed">
             গুগল ম্যাপ ও স্যাটেলাইট ভিউতে ওয়ার্ডভিত্তিক নাগরিক সমস্যা, অগ্রাধিকার ও তাৎক্ষণিক সমাধান স্থিতি।
           </p>
         </div>
 
         {/* Legend Quick Count */}
-        <div className="flex items-center gap-3 bg-[#151a16] border border-[#343d34] px-4 py-2.5 rounded-2xl text-sm shadow-md">
-          <span className="flex items-center gap-1.5 text-[#eeeee6]">
-            <span className="w-3 h-3 rounded-full bg-[#c66e60]" />
+        <div className="flex items-center gap-3 bg-[var(--paper)] border border-[var(--line)] px-4 py-2.5 rounded-2xl text-sm shadow-xs">
+          <span className="flex items-center gap-1.5 text-[var(--status-emergency)]">
+            <span className="w-3 h-3 rounded-full bg-[var(--status-emergency)]" />
             <span>জরুরি ({toBanglaNumber(MAP_INCIDENTS.filter(i => i.priority === 'emergency').length)})</span>
           </span>
-          <span className="text-[#343d34]">|</span>
-          <span className="flex items-center gap-1.5 text-[#d4c19a]">
-            <span className="w-3 h-3 rounded-full bg-[#d8a155]" />
+          <span className="text-[var(--line)]">|</span>
+          <span className="flex items-center gap-1.5 text-[var(--status-high)]">
+            <span className="w-3 h-3 rounded-full bg-[var(--status-high)]" />
             <span>উচ্চ ({toBanglaNumber(MAP_INCIDENTS.filter(i => i.priority === 'high').length)})</span>
           </span>
-          <span className="text-[#343d34]">|</span>
-          <span className="flex items-center gap-1.5 text-[#4b9e78]">
-            <span className="w-3 h-3 rounded-full bg-[#4b9e78]" />
+          <span className="text-[var(--line)]">|</span>
+          <span className="flex items-center gap-1.5 text-[var(--status-low)]">
+            <span className="w-3 h-3 rounded-full bg-[var(--status-low)]" />
             <span>সমাধান ({toBanglaNumber(MAP_INCIDENTS.filter(i => i.status === 'resolved').length)})</span>
           </span>
         </div>
       </div>
 
       {/* Filter & Map Layer Switcher Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-[#151a16] border border-[#343d34] p-4 rounded-2xl shadow-lg">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-[var(--paper)] border border-[var(--line)] p-4 rounded-2xl shadow-xs">
         {/* Category Filter Chips */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-sm font-bold text-[#d4c19a] flex items-center gap-1.5 mr-1">
-            <Filter className="w-4 h-4" />
+          <span className="text-sm font-bold text-[var(--ink)] flex items-center gap-1.5 mr-1">
+            <Filter className="w-4 h-4 text-[var(--muted)]" />
             <span>ফিল্টার:</span>
           </span>
 
@@ -475,8 +475,8 @@ export const CivicMapPage: React.FC = () => {
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 selectedCategory === cat.id
-                  ? 'bg-[#295e42] text-[#d4c19a] border border-[#4b9e78] shadow-sm'
-                  : 'bg-[#0d100e] text-[#a7b0a8] border border-[#343d34] hover:text-[#eeeee6]'
+                  ? 'bg-[var(--ink)] text-[var(--bg)] shadow-xs'
+                  : 'bg-[var(--bg)] text-[var(--muted)] border border-[var(--line)] hover:text-[var(--ink)]'
               }`}
             >
               {cat.label}
@@ -486,12 +486,12 @@ export const CivicMapPage: React.FC = () => {
 
         {/* Tile Layer Selector (Google Maps / Satellite / OSM / Dark) */}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm text-[#a7b0a8] flex items-center gap-1.5">
-            <Globe className="w-4 h-4 text-[#d4c19a]" />
+          <span className="text-sm text-[var(--muted)] flex items-center gap-1.5">
+            <Globe className="w-4 h-4" />
             <span>মানচিত্র প্রকার:</span>
           </span>
 
-          <div className="flex items-center rounded-xl bg-[#0d100e] border border-[#343d34] p-1">
+          <div className="flex items-center rounded-xl bg-[var(--bg)] border border-[var(--line)] p-1">
             {[
               { id: 'google', label: 'গুগল ম্যাপ' },
               { id: 'satellite', label: 'স্যাটেলাইট ভিউ' },
@@ -504,8 +504,8 @@ export const CivicMapPage: React.FC = () => {
                 onClick={() => setActiveTileLayer(layer.id as TileLayerType)}
                 className={`px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-lg transition cursor-pointer ${
                   activeTileLayer === layer.id
-                    ? 'bg-[#d4c19a] text-[#0d100e] font-bold shadow-md'
-                    : 'text-[#a7b0a8] hover:text-[#eeeee6]'
+                    ? 'bg-[var(--paper)] text-[var(--ink)] font-bold shadow-xs border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
                 }`}
               >
                 {layer.label}
@@ -517,13 +517,13 @@ export const CivicMapPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowHotspots(!showHotspots)}
-            className={`px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border transition flex items-center gap-2 cursor-pointer shadow-sm ${
+            className={`px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border transition flex items-center gap-2 cursor-pointer shadow-xs ${
               showHotspots
-                ? 'bg-[#373224] text-[#d4c19a] border-[#6b5c3e]'
-                : 'bg-[#0d100e] text-[#708379] border-[#343d34]'
+                ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)]'
+                : 'bg-[var(--bg)] text-[var(--muted)] border-[var(--line)]'
             }`}
           >
-            <Flame className="w-4 h-4 text-[#d8a155]" />
+            <Flame className="w-4 h-4" />
             <span>হটস্পট জোন</span>
           </button>
         </div>
@@ -532,31 +532,31 @@ export const CivicMapPage: React.FC = () => {
       {/* Main Map + Incident Details Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Interactive Visual Map Canvas */}
-        <div className="lg:col-span-8 rounded-2xl overflow-hidden border border-[#343d34] bg-[#0b100c] min-h-[580px] relative flex flex-col justify-between shadow-2xl">
+        <div className="lg:col-span-8 rounded-2xl overflow-hidden border border-[var(--line)] bg-[var(--bg)] min-h-[580px] relative flex flex-col justify-between shadow-sm">
           {/* Top Quick Action Floating Bar */}
           <div className="absolute top-4 left-4 z-[400] flex items-center gap-2.5">
-            <div className="bg-[#151a16]/90 backdrop-blur-md border border-[#343d34] px-3.5 py-2 rounded-xl text-xs sm:text-sm text-[#a7b0a8] flex items-center gap-2 shadow-lg">
-              <Compass className="w-4.5 h-4.5 text-[#d4c19a]" />
-              <span className="text-[#eeeee6] font-semibold">ঢাকা সিটি কর্পোরেশন সিভিক জোন</span>
+            <div className="bg-[var(--paper)]/95 backdrop-blur-md border border-[var(--line)] px-3.5 py-2 rounded-xl text-xs sm:text-sm text-[var(--muted)] flex items-center gap-2 shadow-xs">
+              <Compass className="w-4.5 h-4.5 text-[var(--ink)]" />
+              <span className="text-[var(--ink)] font-semibold">ঢাকা সিটি কর্পোরেশন সিভিক জোন</span>
             </div>
 
             <button
               type="button"
               onClick={handleLocateMe}
-              className="bg-[#151a16]/90 backdrop-blur-md hover:bg-[#295e42] border border-[#343d34] hover:border-[#4b9e78] text-[#eeeee6] px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-lg transition cursor-pointer"
+              className="civic-btn-secondary px-3 py-2 text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-xs"
               title="আমার অবস্থান চিহ্নিত করুন"
             >
-              <Navigation className="w-4 h-4 text-[#d4c19a]" />
+              <Navigation className="w-4 h-4" />
               <span className="hidden sm:inline">আমার অবস্থান</span>
             </button>
 
             <button
               type="button"
               onClick={handleResetFit}
-              className="bg-[var(--paper)]/90 backdrop-blur-md hover:bg-[var(--green-light)] border border-[var(--line)] text-[var(--ink)] px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-lg transition cursor-pointer"
+              className="civic-btn-secondary px-3 py-2 text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-xs"
               title="সকল কেস দৃশ্যমান করুন"
             >
-              <Maximize2 className="w-4 h-4 text-[var(--gold)]" />
+              <Maximize2 className="w-4 h-4" />
               <span className="hidden sm:inline">সব কেস দেখুন</span>
             </button>
           </div>
@@ -565,17 +565,16 @@ export const CivicMapPage: React.FC = () => {
           <div
             ref={mapContainerRef}
             className="w-full h-[580px] z-0 focus:outline-none"
-            style={{ background: '#0d100e' }}
           />
 
           {/* Bottom Privacy Safeguard Footer */}
-          <div className="bg-[#151a16]/95 border-t border-[#343d34] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#708379] z-10">
+          <div className="bg-[var(--paper)]/95 border-t border-[var(--line)] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[var(--muted)] z-10">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4.5 h-4.5 text-[#4b9e78]" />
+              <ShieldCheck className="w-4.5 h-4.5 text-[var(--status-low)]" />
               <span>নাগরিকের ব্যক্তিগত গোপনীয়তা সুরক্ষায় জিপিএস অবস্থান ক্লাস্টার বা ১০০ মিটার রেডিয়াসে সংরক্ষিত।</span>
             </div>
-            <span className="font-mono text-[#a7b0a8] flex items-center gap-1.5 text-xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#4b9e78] animate-pulse" />
+            <span className="font-mono text-[var(--ink)] flex items-center gap-1.5 text-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--status-low)] animate-pulse" />
               <span>LIVE: {toBanglaNumber(filteredIncidents.length)} Incidents Active</span>
             </span>
           </div>
@@ -584,11 +583,11 @@ export const CivicMapPage: React.FC = () => {
         {/* Right Column: Selected Incident Inspection Card */}
         <div className="lg:col-span-4 space-y-4">
           {selectedIncident ? (
-            <div className="rounded-2xl p-6 sm:p-7 border border-[#343d34] bg-[#151a16] shadow-xl space-y-5 sticky top-24">
-              <div className="flex items-center justify-between pb-3.5 border-b border-[#242c24]">
+            <div className="rounded-2xl p-6 sm:p-7 civic-card shadow-sm space-y-5 sticky top-24">
+              <div className="flex items-center justify-between pb-3.5 border-b border-[var(--line)]">
                 <div>
-                  <span className="text-xs font-mono text-[#a7b0a8]">SELECTED INCIDENT</span>
-                  <h3 className="text-base font-bold text-[#d4c19a] font-mono">#{selectedIncident.id}</h3>
+                  <span className="text-xs font-mono text-[var(--muted)]">SELECTED INCIDENT</span>
+                  <h3 className="text-base font-bold text-[var(--ink)] font-mono">#{selectedIncident.id}</h3>
                 </div>
                 <span
                   style={{
@@ -603,35 +602,35 @@ export const CivicMapPage: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <span className="text-sm text-[#d4c19a] font-bold block">
+                <span className="text-sm text-[var(--muted)] font-bold block">
                   {selectedIncident.categoryBn} · {selectedIncident.wardBn}
                 </span>
-                <p className="text-base font-semibold text-[#eeeee6] leading-snug">
+                <p className="text-base font-semibold text-[var(--ink)] leading-snug">
                   {selectedIncident.titleBn}
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#0d100e] border border-[#2e372e] space-y-2.5 text-sm">
+              <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--line)] space-y-2.5 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#a7b0a8]">দায়িত্বপ্রাপ্ত বিভাগ:</span>
-                  <strong className="text-[#eeeee6] font-semibold">{selectedIncident.deptName}</strong>
+                  <span className="text-[var(--muted)]">দায়িত্বপ্রাপ্ত বিভাগ:</span>
+                  <strong className="text-[var(--ink)] font-semibold">{selectedIncident.deptName}</strong>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#a7b0a8]">বর্তমান স্থিতি:</span>
-                  <span className="text-[#d4c19a] font-semibold">{selectedIncident.statusBn}</span>
+                  <span className="text-[var(--muted)]">বর্তমান স্থিতি:</span>
+                  <span className="text-[var(--ink)] font-semibold">{selectedIncident.statusBn}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#a7b0a8]">এসএলএ লক্ষ্যমাত্রা:</span>
-                  <span className="text-[#4b9e78] font-bold flex items-center gap-1.5 font-mono">
-                    <Clock className="w-4 h-4" />
+                  <span className="text-[var(--muted)]">এসএলএ লক্ষ্যমাত্রা:</span>
+                  <span className="text-[var(--ink)] font-bold flex items-center gap-1.5 font-mono">
+                    <Clock className="w-4 h-4 text-[var(--muted)]" />
                     <span>{selectedIncident.slaRemaining}</span>
                   </span>
                 </div>
               </div>
 
               {selectedIncident.isHotspot && (
-                <div className="p-3.5 rounded-xl bg-[#373224] border border-[#6b5c3e] text-[#d4c19a] text-sm flex items-center gap-2.5">
-                  <Flame className="w-5 h-5 shrink-0 text-[#d8a155]" />
+                <div className="p-3.5 rounded-xl bg-[var(--status-medium-bg)] border border-[var(--status-medium-line)] text-[var(--status-medium)] text-sm flex items-center gap-2.5">
+                  <Flame className="w-5 h-5 shrink-0" />
                   <span className="leading-relaxed">দীর্ঘস্থায়ী হটস্পট: এই এলাকায় সাম্প্রতিককালে একাধিক সমস্যার পুনরাবৃত্তি চিহ্নিত হয়েছে।</span>
                 </div>
               )}
@@ -640,15 +639,15 @@ export const CivicMapPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleFlyToIncident(selectedIncident)}
-                  className="w-full py-3 rounded-xl bg-[var(--paper)] hover:bg-[var(--green-light)] text-[var(--ink)] border border-[var(--line)] text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer"
+                  className="civic-btn-secondary w-full py-3 text-sm flex items-center justify-center gap-2"
                 >
-                  <MapPin className="w-4 h-4 text-[var(--gold)]" />
+                  <MapPin className="w-4 h-4" />
                   <span>মানচিত্রে ফোকাস করুন</span>
                 </button>
 
                 <Link
                   to={`/cases/${selectedIncident.id}`}
-                  className="w-full py-3.5 rounded-xl bg-[#d4c19a] hover:bg-[#ebd8b1] text-[#0d100e] font-bold text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-lg active:scale-95"
+                  className="civic-btn-primary w-full py-3.5 text-sm flex items-center justify-center gap-2 shadow-xs"
                 >
                   <Eye className="w-4.5 h-4.5" />
                   <span>সম্পূর্ণ টাইমলাইন ও সমাধান প্রমাণ</span>
@@ -657,8 +656,8 @@ export const CivicMapPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl p-10 text-center text-[#a7b0a8] bg-[#151a16] border border-[#343d34] space-y-2">
-              <MapPin className="w-10 h-10 mx-auto text-[#708379] mb-2" />
+            <div className="rounded-2xl p-10 text-center text-[var(--muted)] civic-card space-y-2">
+              <MapPin className="w-10 h-10 mx-auto text-[var(--muted)] mb-2" />
               <p className="text-sm font-semibold">মানচিত্রে কোনো পিনে ক্লিক করে বিস্তারিত তথ্য দেখুন</p>
             </div>
           )}

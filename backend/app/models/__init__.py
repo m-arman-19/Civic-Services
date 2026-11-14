@@ -1,6 +1,6 @@
 from app.database import Base
 from app.models.base import BaseModel
-from app.models.user import User, UserRoleEnum, UserScope, CitizenProfile, StaffProfile
+from app.models.user import User, UserRoleEnum, AccountStatusEnum, UserScope, CitizenProfile, StaffProfile, AccountIdentifierHistory, PrivilegedRoleRequest
 from app.models.geography import Ward, Asset, AssetTypeEnum
 from app.models.department import Department, Officer
 from app.models.service import ServiceCatalog, ServiceDocument, ServiceDocumentChunk, ResponsibilityRule
@@ -12,7 +12,7 @@ from app.models.sla import SLAPolicy, SLAEvent, SLAStepEnum
 from app.models.notification import Consent, Notification, SMSMockLog
 from app.models.audit import AuditLog
 from app.models.task_assignment import TaskAssignmentHistory, TaskWaitingQueue
-from app.models.system import SystemConfig, ApprovalRequest, ApprovalStatusEnum
+from app.models.system import SystemConfig, ApprovalRequest, ApprovalStatusEnum, PolicyChangeRequest, PolicyChangeCategoryEnum, PolicyApprovalStateEnum, PolicyImplementationStateEnum
 
 __all__ = [
     "BaseModel",
@@ -28,5 +28,6 @@ __all__ = [
     "SLAPolicy", "SLAEvent", "SLAStepEnum",
     "Consent", "Notification", "SMSMockLog",
     "AuditLog",
-    "SystemConfig", "ApprovalRequest", "ApprovalStatusEnum"
+    "SystemConfig", "ApprovalRequest", "ApprovalStatusEnum",
+    "PolicyChangeRequest", "PolicyChangeCategoryEnum", "PolicyApprovalStateEnum", "PolicyImplementationStateEnum"
 ]

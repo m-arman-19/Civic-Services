@@ -11,7 +11,7 @@ from app.models.case import (
     Case, CaseReport, CaseTask, CaseStatusHistory, CasePriorityHistory,
     CaseStatusEnum, PriorityEnum, TaskStatusEnum
 )
-from app.models.evidence import CaseEvidence, EvidenceTypeEnum
+from app.models.evidence import CaseEvidence, EvidenceTypeEnum, CaseFeedback, CaseObjection
 from app.models.geography import Ward, Asset
 from app.models.department import Department, Officer
 from app.services.ai_engine import AIEngineService
@@ -25,7 +25,7 @@ from app.dependencies import get_current_user, get_current_user_optional, requir
 from app.schemas.case import (
     IntakeRequest, CaseConfirmationRequest, TaskCreateRequest,
     SequenceApprovalRequest, PriorityOverrideRequest, ResponsibilityOverrideRequest,
-    CaseResponse
+    CaseVerificationRequest, CaseResponse, CaseCloseRequest, ResolutionReviewRequest
 )
 
 router = APIRouter(prefix="/cases", tags=["Cases & Intake"])
@@ -254,6 +254,16 @@ async def get_case_detail(
     if not case:
         raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
 
+    # RBAC scope enforcement (R&D Section 11 & Table 30)
+    if current_user:
+        if current_user.role == UserRoleEnum.WARD_DESK:
+            assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+            if assigned_ward_ids and case.ward_id not in assigned_ward_ids:
+                raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেস দেখার অনুমতি নেই।")
+        elif current_user.role == UserRoleEnum.CITIZEN:
+            if case.citizen_user_id and case.citizen_user_id != current_user.id:
+                raise HTTPException(status_code=403, detail="অন্য নাগরিকের ব্যক্তিগত কেস দেখার অনুমতি নেই।")
+
     # Evaluate SLA
     sla_info = await SLAService.evaluate_case_sla(db, case)
 
@@ -339,6 +349,11 @@ async def approve_case_workflow_sequence(
     if not case:
         raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
 
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids and case.ward_id not in assigned_ward_ids:
+            raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেস অনুমোদনের অনুমতি নেই।")
+
     # Clear old tasks if any
     for t in case.tasks:
         await db.delete(t)
@@ -413,6 +428,11 @@ async def override_case_priority(
     if not case:
         raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
 
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids and case.ward_id not in assigned_ward_ids:
+            raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেসের অগ্রাধিকার পরিবর্তনের অনুমতি নেই।")
+
     old_priority = case.priority
     case.priority = req.priority
     case.priority_override_reason = req.reason
@@ -453,6 +473,11 @@ async def override_case_responsibility(
     if not case:
         raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
 
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids and case.ward_id not in assigned_ward_ids:
+            raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেসের দায়িত্ব পরিবর্তনের অনুমতি নেই।")
+
     old_dept_id = case.lead_department_id
     case.lead_department_id = req.department_id
     if req.officer_id:
@@ -473,3 +498,465 @@ async def override_case_responsibility(
     )
     await db.commit()
     return {"message_bn": "দায়িত্বপ্রাপ্ত বিভাগ সফলভাবে সংশোধিত হয়েছে।", "case_id": case.id}
+
+@router.post("/{case_id}/verify")
+async def verify_case(
+    case_id: str,
+    req: CaseVerificationRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.WARD_DESK, UserRoleEnum.COORDINATOR, UserRoleEnum.ADMIN]))
+):
+    """
+    R&D Section 4 & 11: Ward Desk Staff Report Verification.
+    Verifies AI proposal or records manual determination, sets status to VERIFIED.
+    """
+    stmt = select(Case).where(Case.id == case_id)
+    res = await db.execute(stmt)
+    case = res.scalar_one_or_none()
+    if not case:
+        raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
+
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids and case.ward_id not in assigned_ward_ids:
+            raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেস যাচাই করার অনুমতি নেই।")
+
+    old_status = case.status
+    old_dept_id = case.lead_department_id
+    old_priority = case.priority
+
+    case.lead_department_id = req.lead_department_id
+    case.priority = req.priority
+    if req.assigned_asset_id:
+        case.asset_id = req.assigned_asset_id
+
+    case.status = CaseStatusEnum.VERIFIED
+    case.requires_staff_verification = False
+
+    reason_parts = []
+    if req.is_overridden and req.override_reason:
+        reason_parts.append(f"বিভাগ ওভাররাইড: {req.override_reason}")
+    if req.priority_override_reason:
+        reason_parts.append(f"অগ্রাধিকার পরিবর্তন: {req.priority_override_reason}")
+        case.priority_override_reason = req.priority_override_reason
+    if req.confirmed_notes:
+        reason_parts.append(f"যাচাই মন্তব্য: {req.confirmed_notes}")
+
+    combined_reason = " | ".join(reason_parts) if reason_parts else "ওয়ার্ড ডেস্ক কর্মকর্তা কর্তৃক যাচাইকৃত ও দায়িত্ব অনুমোদিত"
+    case.responsibility_reason_bn = f"[যাচাইকৃত] {combined_reason}"
+
+    hist = CaseStatusHistory(
+        case_id=case.id,
+        from_status=old_status,
+        to_status=CaseStatusEnum.VERIFIED,
+        changed_by_user_id=current_user.id,
+        actor_role=current_user.role.value,
+        reason_bn=combined_reason
+    )
+    db.add(hist)
+
+    await AuditLogger.log_event(
+        db=db,
+        actor_user_id=current_user.id,
+        actor_role=current_user.role.value,
+        action="VERIFY_CASE_RESPONSIBILITY",
+        resource_type="CASE",
+        resource_id=case.id,
+        before_state={"status": old_status.value, "department_id": old_dept_id, "priority": old_priority.value},
+        after_state={"status": CaseStatusEnum.VERIFIED.value, "department_id": req.lead_department_id, "priority": req.priority.value},
+        reason=combined_reason
+    )
+    await db.commit()
+    return {"message_bn": "কেস সফলভাবে যাচাই ও দায়িত্ব অনুমোদিত হয়েছে।", "case_id": case.id, "status": case.status.value}
+
+@router.get("/assisted/history")
+async def get_assisted_intake_history(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.WARD_DESK, UserRoleEnum.COORDINATOR, UserRoleEnum.ADMIN]))
+):
+    """
+    R&D Section 2.3 & 4: Assisted citizen intake history.
+    Returns cases filed on behalf of citizens at the ward desk, with citizen PII masked.
+    """
+    stmt = select(Case).options(
+        selectinload(Case.ward),
+        selectinload(Case.lead_department)
+    ).where(Case.intake_channel.in_(["ward_desk", "assisted_walkin"])).order_by(desc(Case.created_at))
+
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids:
+            stmt = stmt.where(Case.ward_id.in_(assigned_ward_ids))
+
+    res = await db.execute(stmt)
+    cases = res.scalars().all()
+
+    output = []
+    for c in cases:
+        output.append({
+            "id": c.id,
+            "tracking_number": c.tracking_number,
+            "title_bn": c.title_bn,
+            "description_bn": c.description_bn,
+            "primary_category": c.primary_category,
+            "address_text": c.address_text,
+            "landmark": c.landmark,
+            "ward_name_bn": c.ward.ward_name_bn if c.ward else None,
+            "department_name_bn": c.lead_department.name_bn if c.lead_department else None,
+            "status": c.status.value,
+            "priority": c.priority.value,
+            "intake_channel": c.intake_channel,
+            "created_at": c.created_at.isoformat()
+        })
+    return output
+
+@router.post("/{case_id}/close")
+async def close_case(
+    case_id: str,
+    req: CaseCloseRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.COORDINATOR]))
+):
+    """
+    R&D Table 30 & Module 8: Authorized Case Closure.
+    Only Coordinator and Admin can close cases (Ward Desk & Citizens are forbidden: T-RBAC-04).
+    Enforces that evidence must exist (UT-DM-05 / S8) unless a documented exception is provided.
+    """
+    stmt = select(Case).where(Case.id == case_id).options(
+        selectinload(Case.evidence_items),
+        selectinload(Case.tasks)
+    )
+    res = await db.execute(stmt)
+    case = res.scalar_one_or_none()
+    if not case:
+        raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
+
+    if case.status == CaseStatusEnum.CLOSED:
+        raise HTTPException(status_code=400, detail="কেসটি ইতিমধ্যে সমাপ্ত (Closed) করা হয়েছে।")
+
+    # Evidence requirement (R&D S8 / UT-DM-05)
+    has_after_evidence = any(e.evidence_type == EvidenceTypeEnum.AFTER for e in case.evidence_items)
+    if not has_after_evidence and not req.exception_documented:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="সমাধানের প্রমাণক ব্যতীত কেস সমাপ্ত করা সম্ভব নয় (R&D Rule S8 / UT-DM-05)। কোনো প্রশাসনিক ব্যতিক্রম থাকলে তা লিখিতভাবে নথিভুক্ত করুন।"
+        )
+
+    old_status = case.status
+    case.status = CaseStatusEnum.CLOSED
+
+    # Mark remaining tasks resolved
+    for t in case.tasks:
+        if t.status not in [TaskStatusEnum.COMPLETED_AWAITING_REVIEW, TaskStatusEnum.VERIFIED_COMPLETED]:
+            t.status = TaskStatusEnum.VERIFIED_COMPLETED
+
+    closure_reason = f"[প্রশাসনিক ব্যতিক্রম] {req.reason_bn}" if req.exception_documented else req.reason_bn
+    if req.exception_notes:
+        closure_reason += f" | নোট: {req.exception_notes}"
+
+    hist = CaseStatusHistory(
+        case_id=case.id,
+        from_status=old_status,
+        to_status=CaseStatusEnum.CLOSED,
+        changed_by_user_id=current_user.id,
+        actor_role=current_user.role.value,
+        reason_bn=closure_reason
+    )
+    db.add(hist)
+
+    await AuditLogger.log_event(
+        db=db,
+        actor_user_id=current_user.id,
+        actor_role=current_user.role.value,
+        action="COORDINATOR_CLOSE_CASE",
+        resource_type="CASE",
+        resource_id=case.id,
+        before_state={"status": old_status.value},
+        after_state={"status": CaseStatusEnum.CLOSED.value, "exception_documented": req.exception_documented},
+        reason=closure_reason
+    )
+    await db.commit()
+
+    return {
+        "message_bn": "কেসটি সফলভাবে চূড়ান্ত সমাপ্ত (Closed) ঘোষণা করা হয়েছে।",
+        "case_id": case.id,
+        "status": case.status.value
+    }
+
+@router.post("/{case_id}/resolution-review")
+async def review_case_resolution(
+    case_id: str,
+    req: ResolutionReviewRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.COORDINATOR, UserRoleEnum.WARD_DESK]))
+):
+    """
+    R&D Table 30 & Module 8: Evidence Review & Re-review.
+    Coordinator / Ward Desk reviews completion proof and either approves or requests rework.
+    """
+    stmt = select(Case).where(Case.id == case_id).options(
+        selectinload(Case.evidence_items),
+        selectinload(Case.tasks)
+    )
+    res = await db.execute(stmt)
+    case = res.scalar_one_or_none()
+    if not case:
+        raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
+
+    old_status = case.status
+
+    if req.decision == "approved":
+        has_after_evidence = any(e.evidence_type == EvidenceTypeEnum.AFTER for e in case.evidence_items)
+        if not has_after_evidence:
+            raise HTTPException(status_code=400, detail="সমাধানের প্রমাণক আপলোড ব্যতীত পর্যালোচনা অনুমোদন সম্ভব নয়।")
+
+        case.status = CaseStatusEnum.RESOLVED_PROOF_UPLOADED
+
+        hist = CaseStatusHistory(
+            case_id=case.id,
+            from_status=old_status,
+            to_status=CaseStatusEnum.RESOLVED_PROOF_UPLOADED,
+            changed_by_user_id=current_user.id,
+            actor_role=current_user.role.value,
+            reason_bn=f"প্রমাণক পর্যালোচনা অনুমোদিত: {req.notes_bn}"
+        )
+        db.add(hist)
+
+        await AuditLogger.log_event(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_role=current_user.role.value,
+            action="RESOLUTION_REVIEW_APPROVED",
+            resource_type="CASE",
+            resource_id=case.id,
+            after_state={"status": CaseStatusEnum.RESOLVED_PROOF_UPLOADED.value},
+            reason=req.notes_bn
+        )
+        await db.commit()
+        return {"message_bn": "প্রমাণক পর্যালোচনা সফলভাবে অনুমোদিত হয়েছে।", "case_id": case.id, "status": case.status.value}
+
+    elif req.decision == "rework_required":
+        # Target specific task or the last task
+        target_task = None
+        if req.target_task_id:
+            target_task = next((t for t in case.tasks if t.id == req.target_task_id), None)
+        if not target_task and case.tasks:
+            target_task = case.tasks[-1]
+
+        if target_task:
+            target_task.status = TaskStatusEnum.IN_PROGRESS
+            target_task.waiting_reason_bn = f"সমন্বয়কারী কর্তৃক পুনঃকাজের নির্দেশ: {req.notes_bn}"
+
+        case.status = CaseStatusEnum.IN_PROGRESS
+
+        hist = CaseStatusHistory(
+            case_id=case.id,
+            from_status=old_status,
+            to_status=CaseStatusEnum.IN_PROGRESS,
+            changed_by_user_id=current_user.id,
+            actor_role=current_user.role.value,
+            reason_bn=f"পুনরায় কাজের নির্দেশ: {req.notes_bn}"
+        )
+        db.add(hist)
+
+        await AuditLogger.log_event(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_role=current_user.role.value,
+            action="RESOLUTION_REVIEW_REWORK_REQUESTED",
+            resource_type="CASE",
+            resource_id=case.id,
+            after_state={"status": CaseStatusEnum.IN_PROGRESS.value, "target_task_id": target_task.id if target_task else None},
+            reason=req.notes_bn
+        )
+        await db.commit()
+        return {"message_bn": "পুনরায় কাজের নির্দেশ সফলভাবে প্রেরিত হয়েছে।", "case_id": case.id, "status": case.status.value}
+    else:
+        raise HTTPException(status_code=400, detail="অবৈধ সিদ্ধান্ত মান (অনুমোদিত মান: approved, rework_required)")
+
+@router.get("/coordinator/stats")
+async def get_coordinator_dashboard_stats(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.COORDINATOR, UserRoleEnum.ADMIN]))
+):
+    """
+    R&D Section 11 & Screen S-COORD-01: Coordinator Cockpit Overview.
+    Aggregates real jurisdiction-level counts for all operational queues.
+    """
+    stmt_cases = select(Case).options(
+        selectinload(Case.tasks),
+        selectinload(Case.evidence_items),
+        selectinload(Case.objections)
+    )
+    res_cases = await db.execute(stmt_cases)
+    cases = res_cases.scalars().all()
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+
+    awaiting_approval = 0
+    emergency_incidents = 0
+    overdue_tasks = 0
+    department_rejections = 0
+    pending_evidence_reviews = 0
+    citizen_objections = 0
+    stalled_cases = 0
+    multi_dept_cases = 0
+    reopened_cases = 0
+    total_active_cases = 0
+
+    for c in cases:
+        if c.status != CaseStatusEnum.CLOSED:
+            total_active_cases += 1
+
+        if c.status in [CaseStatusEnum.SUBMITTED, CaseStatusEnum.VERIFIED] and len(c.tasks) == 0:
+            awaiting_approval += 1
+
+        if (c.priority == PriorityEnum.EMERGENCY or c.is_hazard) and c.status != CaseStatusEnum.CLOSED:
+            emergency_incidents += 1
+
+        if c.status == CaseStatusEnum.RESOLVED_PROOF_UPLOADED:
+            pending_evidence_reviews += 1
+
+        if c.status == CaseStatusEnum.RE_OPENED or (c.objections and any(o.review_status == "pending_review" for o in c.objections)):
+            citizen_objections += 1
+
+        if c.status == CaseStatusEnum.RE_OPENED:
+            reopened_cases += 1
+
+        if len(c.tasks) > 1:
+            multi_dept_cases += 1
+
+        has_stalled_task = False
+        for t in c.tasks:
+            if t.acceptance_status == "rejected":
+                department_rejections += 1
+            if t.waiting_reason_bn and t.status not in [TaskStatusEnum.COMPLETED_AWAITING_REVIEW, TaskStatusEnum.VERIFIED_COMPLETED]:
+                has_stalled_task = True
+            # Overdue check
+            if t.status not in [TaskStatusEnum.COMPLETED_AWAITING_REVIEW, TaskStatusEnum.VERIFIED_COMPLETED]:
+                start_ref = t.started_at or t.created_at
+                if start_ref:
+                    start_ref = start_ref.replace(tzinfo=datetime.timezone.utc) if start_ref.tzinfo is None else start_ref
+                    deadline = start_ref + datetime.timedelta(hours=t.sla_hours or 48)
+                    if now > deadline:
+                        overdue_tasks += 1
+
+        if has_stalled_task:
+            stalled_cases += 1
+
+    return {
+        "awaiting_approval": awaiting_approval,
+        "emergency_incidents": emergency_incidents,
+        "overdue_tasks": overdue_tasks,
+        "department_rejections": department_rejections,
+        "pending_evidence_reviews": pending_evidence_reviews,
+        "citizen_objections": citizen_objections,
+        "stalled_cases": stalled_cases,
+        "multi_dept_cases": multi_dept_cases,
+        "reopened_cases": reopened_cases,
+        "total_active_cases": total_active_cases
+    }
+
+@router.get("/coordinator/department-performance")
+async def get_coordinator_department_performance(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.COORDINATOR, UserRoleEnum.ADMIN]))
+):
+    """
+    R&D Table 14 & Screen Reports: Department Performance Metrics.
+    Aggregates response times, resolution rates, rejections, and waiting reasons.
+    """
+    stmt_depts = select(Department).order_by(Department.name_bn)
+    res_depts = await db.execute(stmt_depts)
+    depts = res_depts.scalars().all()
+
+    stmt_tasks = select(CaseTask).options(selectinload(CaseTask.case))
+    res_tasks = await db.execute(stmt_tasks)
+    all_tasks = res_tasks.scalars().all()
+
+    performance = []
+    now = datetime.datetime.now(datetime.timezone.utc)
+
+    for d in depts:
+        d_tasks = [t for t in all_tasks if t.department_id == d.id]
+        total_tasks = len(d_tasks)
+        completed_tasks = sum(1 for t in d_tasks if t.status in [TaskStatusEnum.COMPLETED_AWAITING_REVIEW, TaskStatusEnum.VERIFIED_COMPLETED])
+        in_progress_tasks = sum(1 for t in d_tasks if t.status == TaskStatusEnum.IN_PROGRESS)
+        rejected_tasks = sum(1 for t in d_tasks if t.acceptance_status == "rejected")
+        
+        overdue = 0
+        durations_hours = []
+        waiting_reasons = []
+
+        for t in d_tasks:
+            if t.status not in [TaskStatusEnum.COMPLETED_AWAITING_REVIEW, TaskStatusEnum.VERIFIED_COMPLETED]:
+                start_ref = t.started_at or t.created_at
+                if start_ref:
+                    start_ref = start_ref.replace(tzinfo=datetime.timezone.utc) if start_ref.tzinfo is None else start_ref
+                    deadline = start_ref + datetime.timedelta(hours=t.sla_hours or 48)
+                    if now > deadline:
+                        overdue += 1
+            if t.started_at and t.completed_at:
+                st = t.started_at.replace(tzinfo=datetime.timezone.utc) if t.started_at.tzinfo is None else t.started_at
+                ct = t.completed_at.replace(tzinfo=datetime.timezone.utc) if t.completed_at.tzinfo is None else t.completed_at
+                hours = max(0.5, (ct - st).total_seconds() / 3600.0)
+                durations_hours.append(hours)
+            if t.waiting_reason_bn:
+                waiting_reasons.append(t.waiting_reason_bn)
+
+        median_hours = round(sum(durations_hours) / max(1, len(durations_hours)), 1) if durations_hours else 24.0
+        closure_rate = round((completed_tasks / max(1, total_tasks)) * 100, 1)
+
+        performance.append({
+            "department_id": d.id,
+            "department_code": d.code,
+            "department_name_bn": d.name_bn,
+            "total_tasks": total_tasks,
+            "completed_tasks": completed_tasks,
+            "in_progress_tasks": in_progress_tasks,
+            "rejected_tasks": rejected_tasks,
+            "overdue_tasks": overdue,
+            "avg_resolution_hours": median_hours,
+            "closure_rate_pct": closure_rate,
+            "sample_size_valid": total_tasks >= 3,
+            "common_waiting_reasons": list(set(waiting_reasons))[:3]
+        })
+
+    return performance
+
+@router.get("/coordinator/objections")
+async def get_coordinator_objections(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.COORDINATOR, UserRoleEnum.WARD_DESK, UserRoleEnum.ADMIN]))
+):
+    """
+    R&D Table 26 & Section 14: Citizen Objections Review Queue.
+    Returns citizen objections requiring coordinator/staff re-evaluation.
+    """
+    stmt = select(CaseObjection).options(
+        selectinload(CaseObjection.case).selectinload(Case.ward),
+        selectinload(CaseObjection.case).selectinload(Case.lead_department),
+        selectinload(CaseObjection.case).selectinload(Case.tasks)
+    ).order_by(desc(CaseObjection.created_at))
+
+    res = await db.execute(stmt)
+    objections = res.scalars().all()
+
+    output = []
+    for o in objections:
+        case = o.case
+        output.append({
+            "id": o.id,
+            "case_id": o.case_id,
+            "tracking_number": case.tracking_number if case else "N/A",
+            "case_title_bn": case.title_bn if case else "N/A",
+            "ward_name_bn": case.ward.ward_name_bn if case and case.ward else None,
+            "department_name_bn": case.lead_department.name_bn if case and case.lead_department else None,
+            "objection_reason_bn": o.objection_reason_bn,
+            "attached_evidence_url": o.attached_evidence_url,
+            "review_status": o.review_status,
+            "reopened_task_id": o.reopened_task_id,
+            "created_at": o.created_at.isoformat()
+        })
+    return output
+

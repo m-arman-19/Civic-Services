@@ -144,5 +144,6 @@ export const DEMO_ROLES: { role: UserRole; title: string; subtitle: string; icon
   { role: 'ward_desk', title: 'ওয়ার্ড ডেস্ক (Ward Desk Staff)', subtitle: 'রিপোর্ট ট্রায়াজ ও এআই দায়িত্ব যাচাই', icon: 'LayoutDashboard' },
   { role: 'field_officer', title: 'মাঠ পর্যায়ের কর্মকর্তা (Field Staff)', subtitle: 'পরিদর্শন ও সমাধান প্রমাণ আপলোড', icon: 'Wrench' },
   { role: 'coordinator', title: 'সমন্বয়ক (Case Coordinator)', subtitle: 'বহু-বিভাগীয় অনুক্রম ও এসএলএ তদারকি', icon: 'GitMerge' },
-  { role: 'admin', title: 'প্রশাসক (System Admin)', subtitle: 'এআই গেট, নিয়মাবলী ও অডিট লগ প্রশাসন', icon: 'ShieldCheck' }
+  { role: 'admin', title: 'সিস্টেম অ্যাডমিন (System Administrator)', subtitle: 'টেকনিক্যাল প্ল্যাটফর্ম, আইএএম ও অডিট ইন্টিগ্রিটি', icon: 'ShieldCheck' },
+  { role: 'governance_head', title: 'সিটি গভর্নেন্স প্রধান (City Governance Head)', subtitle: 'পৌর নীতিমালা, দ্বৈত অনুমোদন ও সেবা প্রশাসন', icon: 'Building2' }
 ];

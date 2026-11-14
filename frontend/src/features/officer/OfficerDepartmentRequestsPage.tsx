@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { apiClient } from '../../services/apiClient';
 import { useAuth } from '../../context/AuthContext';
-import { toBanglaNumber } from '../../utils/formatters';
+import { PriorityBadge } from '../../components/common/Badge';
 import { CheckCircle2, XCircle, Clock, AlertTriangle, ArrowRight, ShieldCheck, Inbox, Sparkles, MapPin } from 'lucide-react';
 
 export const OfficerDepartmentRequestsPage: React.FC = () => {
@@ -59,32 +59,32 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1540px] mx-auto px-4 sm:px-6 py-8 space-y-6 animate-in fade-in duration-200">
+    <div className="max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 animate-in fade-in duration-150">
       {/* Header & Sub-Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#343d34]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--line)]">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1b221c] border border-[#343d34] text-[#d4c19a] text-xs font-mono tracking-widest uppercase">
-            <Sparkles className="w-3.5 h-3.5 text-[#d4c19a]" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[var(--paper-elevated)] border border-[var(--line)] text-[var(--ink)] text-xs font-mono tracking-wider uppercase font-semibold">
+            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
             <span>{currentUser?.departmentName || 'ড্রেনেজ ও পয়ঃনিষ্কাশন বিভাগ'}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#eeeee6] tracking-tight mt-2.5">
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--ink)] tracking-tight mt-1.5">
             আগত দাপ্তরিক কাজের অনুরোধ ও দায়িত্ব গ্রহণ
           </h1>
-          <p className="text-sm text-[#a7b0a8] mt-1.5">
+          <p className="text-xs sm:text-sm text-[var(--muted)] mt-1">
             এআই ও ওয়ার্ড সমন্বয়কারী কর্তৃক নির্ধারিত কাজের পর্যালোচনা ও আনুষ্ঠানিক স্বীকৃতি গেট।
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
           <Link
             to="/officer/tasks"
-            className="px-4 py-2.5 text-sm font-semibold rounded-xl bg-[var(--paper)] hover:bg-[var(--green-light)] text-[var(--ink)] border border-[var(--line)] transition cursor-pointer shadow-sm"
+            className="civic-btn-secondary text-xs py-2 px-3.5"
           >
             আমার চলতি কাজ
           </Link>
           <Link
             to="/officer/assignment-queue"
-            className="px-4 py-2.5 text-sm font-semibold rounded-xl bg-[var(--paper)] hover:bg-[var(--green-light)] text-[var(--ink)] border border-[var(--line)] transition cursor-pointer shadow-sm"
+            className="civic-btn-secondary text-xs py-2 px-3.5"
           >
             অপেক্ষারত কিউ
           </Link>
@@ -93,33 +93,33 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
 
       {/* Action Success Notification */}
       {actionSuccessMessage && (
-        <div className="p-4 rounded-xl bg-[#1c2b20] border border-[#295e42] text-[#a8e6cf] text-sm font-semibold flex items-center gap-3 shadow-lg animate-in fade-in">
-          <CheckCircle2 className="w-5 h-5 text-[#4b9e78] shrink-0" />
+        <div className="p-3.5 rounded-lg bg-[var(--status-low-bg)] border border-[var(--status-low-border)] text-[var(--status-low)] text-xs font-semibold flex items-center gap-2.5 shadow-xs animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 shrink-0" aria-hidden="true" />
           <span>{actionSuccessMessage}</span>
         </div>
       )}
 
       {/* Error Message */}
       {error && (
-        <div className="p-4 rounded-xl bg-[#382326] border border-[#71434a] text-[#e8b6b8] text-sm font-semibold flex items-center gap-3 shadow-lg">
-          <AlertTriangle className="w-5 h-5 text-[#e8b6b8] shrink-0" />
+        <div className="p-3.5 rounded-lg bg-[var(--status-emergency-bg)] border border-[var(--status-emergency-border)] text-[var(--status-emergency)] text-xs font-semibold flex items-center gap-2.5 shadow-xs">
+          <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Main Request Cards */}
       {loading ? (
-        <div className="p-14 text-center text-[#a7b0a8] text-sm rounded-2xl bg-[#151a16] border border-[#343d34]">
+        <div className="p-12 text-center text-[var(--muted)] text-xs civic-card">
           দাপ্তরিক অনুরোধ কিউ লোড হচ্ছে...
         </div>
       ) : requests.length === 0 ? (
-        <div className="p-14 text-center text-[#a7b0a8] rounded-2xl bg-[#151a16] border border-[#343d34] space-y-3.5">
-          <Inbox className="w-14 h-14 text-[#4b9e78] mx-auto opacity-70" />
-          <h3 className="text-lg font-bold text-[#eeeee6]">কোনো নতুন কাজের অনুরোধ অমীমাংসিত নেই</h3>
-          <p className="text-sm text-[#a7b0a8]">এই মুহূর্তে আপনার দপ্তরের জন্য কোনো নতুন টাস্ক অপেক্ষারত নেই।</p>
+        <div className="p-12 text-center text-[var(--muted)] civic-card space-y-2.5">
+          <Inbox className="w-10 h-10 text-[var(--muted)] mx-auto opacity-60" aria-hidden="true" />
+          <h3 className="text-base font-bold text-[var(--ink)]">কোনো নতুন কাজের অনুরোধ অপেক্ষমাণ নেই</h3>
+          <p className="text-xs text-[var(--muted)]">এই মুহূর্তে আপনার দপ্তরের জন্য কোনো নতুন টাস্ক অপেক্ষারত নেই।</p>
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {requests.map((req) => {
             const isAccepted = req.acceptance_status === 'accepted';
             const isRejected = req.acceptance_status === 'rejected';
@@ -127,43 +127,36 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
             return (
               <div
                 key={req.id}
-                className="p-6 sm:p-7 rounded-2xl bg-[#151a16] border border-[#343d34] hover:border-[#4b9e78]/80 transition-all shadow-xl space-y-5"
+                className="civic-card p-5 sm:p-6 hover:border-[var(--ink)] transition-all shadow-xs space-y-4"
               >
                 {/* Header row */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-[#242c24]">
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="font-mono text-xs font-bold text-[#d4c19a] bg-[#0d100e] px-3 py-1 rounded-lg border border-[#343d34]">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3.5 border-b border-[var(--line-subtle)]">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-[var(--ink)] bg-[var(--paper-elevated)] px-2.5 py-0.5 rounded-md border border-[var(--line)]">
                         #{req.case_id || req.id}
                       </span>
-                      <span className={`text-xs px-3 py-1 rounded-full font-bold border ${
-                        req.priority === 'emergency' ? 'bg-[#382326] text-[#e8b6b8] border-[#71434a]' :
-                        req.priority === 'high' ? 'bg-[#373224] text-[#d4c19a] border-[#6b5c3e]' :
-                        'bg-[#1b221c] text-[#a7b0a8] border-[#343d34]'
-                      }`}>
-                        {req.priority === 'emergency' ? 'জরুরি (Emergency)' :
-                         req.priority === 'high' ? 'উচ্চ অগ্রাধিকার' : 'সাধারণ'}
-                      </span>
-                      <span className="text-sm text-[#a7b0a8] flex items-center gap-1.5 font-medium">
-                        <MapPin className="w-4 h-4 text-[#d4c19a]" />
+                      <PriorityBadge priority={req.priority} />
+                      <span className="text-xs text-[var(--muted)] flex items-center gap-1 font-medium">
+                        <MapPin className="w-3.5 h-3.5 text-[var(--muted)]" aria-hidden="true" />
                         <span>{req.ward_name_bn || 'ওয়ার্ড ৩'}</span>
                       </span>
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold text-[#eeeee6] leading-snug pt-1">
+                    <h3 className="text-base sm:text-lg font-bold text-[var(--ink)] leading-snug">
                       {req.title_bn}
                     </h3>
                   </div>
 
-                  <div className="flex sm:flex-col items-end gap-2.5 shrink-0">
-                    <span className="text-sm text-[#4b9e78] font-bold flex items-center gap-1.5 font-mono">
-                      <Clock className="w-4 h-4" />
+                  <div className="flex sm:flex-col items-end gap-2 shrink-0">
+                    <span className="text-xs text-[var(--ink)] font-bold flex items-center gap-1.5 font-mono">
+                      <Clock className="w-3.5 h-3.5 text-[var(--muted)]" aria-hidden="true" />
                       <span>{req.sla_remaining_bn || 'এসএলএ বাকি'}</span>
                     </span>
-                    <span className={`text-xs px-3 py-1 rounded-full font-semibold border ${
-                      isAccepted ? 'bg-[#1c2b20] text-[#a8e6cf] border-[#295e42]' :
-                      isRejected ? 'bg-[#382326] text-[#e8b6b8] border-[#71434a]' :
-                      'bg-[#172535] text-[#93c5fd] border-[#1e3a5f]'
+                    <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold border ${
+                      isAccepted ? 'bg-[var(--status-low-bg)] text-[var(--status-low)] border-[var(--status-low-border)]' :
+                      isRejected ? 'bg-[var(--status-emergency-bg)] text-[var(--status-emergency)] border-[var(--status-emergency-border)]' :
+                      'bg-[var(--paper-elevated)] text-[var(--muted)] border-[var(--line)]'
                     }`}>
                       {isAccepted ? '✓ গৃহীত (Accepted)' :
                        isRejected ? '✕ প্রত্যাখ্যাত' : 'পর্যালোচনা অপেক্ষারত'}
@@ -173,26 +166,26 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
 
                 {/* AI Routing Rationale */}
                 {req.ai_routing_rationale && (
-                  <div className="p-4 rounded-xl bg-[#0d100e] border border-[#2e372e] text-sm text-[#c8d1c9] flex items-start gap-3">
-                    <Sparkles className="w-4.5 h-4.5 text-[#d4c19a] shrink-0 mt-0.5" />
+                  <div className="p-3.5 rounded-lg bg-[var(--paper-elevated)] border border-[var(--line)] text-xs text-[var(--ink)] flex items-start gap-2.5">
+                    <Sparkles className="w-4 h-4 text-[var(--muted)] shrink-0 mt-0.5" aria-hidden="true" />
                     <div>
-                      <strong className="text-[#eeeee6] block mb-1 text-sm font-semibold">এআই দায়িত্ব নির্ধারণ ও এখতিয়ার ব্যাখ্যা:</strong>
-                      <span className="leading-relaxed">{req.ai_routing_rationale}</span>
+                      <strong className="text-[var(--ink)] block mb-0.5 text-xs font-semibold">এআই দায়িত্ব নির্ধারণ ও এখতিয়ার ব্যাখ্যা:</strong>
+                      <span className="text-[var(--muted)] leading-relaxed">{req.ai_routing_rationale}</span>
                     </div>
                   </div>
                 )}
 
                 {/* Prerequisite status notice */}
                 {req.prerequisite_note && (
-                  <div className="p-4 rounded-xl bg-[#1b221c] border border-[#343d34] text-sm text-[#eeeee6] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <ShieldCheck className="w-4.5 h-4.5 text-[#4b9e78] shrink-0" />
+                  <div className="p-3 rounded-lg bg-[var(--paper-elevated)] border border-[var(--line)] text-xs text-[var(--ink)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-[var(--status-low)] shrink-0" aria-hidden="true" />
                       <span className="leading-relaxed">{req.prerequisite_note}</span>
                     </div>
-                    <span className={`text-xs font-mono px-2.5 py-1 rounded-md border shrink-0 ${
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border shrink-0 ${
                       req.prerequisites_completed
-                        ? 'bg-[#1c2b20] text-[#a8e6cf] border-[#295e42]'
-                        : 'bg-[#373224] text-[#d4c19a] border-[#6b5c3e]'
+                        ? 'bg-[var(--status-low-bg)] text-[var(--status-low)] border-[var(--status-low-border)]'
+                        : 'bg-[var(--status-high-bg)] text-[var(--status-high)] border-[var(--status-high-border)]'
                     }`}>
                       {req.prerequisites_completed ? 'পূর্বশর্ত প্রস্তুত' : 'অপেক্ষমাণ'}
                     </span>
@@ -200,38 +193,38 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[#242c24]/50">
-                  <div className="text-sm text-[#708379]">
-                    দাখিল তারিখ: <span className="text-[#a7b0a8] font-mono">{req.created_at ? new Date(req.created_at).toLocaleDateString('bn-BD') : 'আজ'}</span>
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[var(--line-subtle)]">
+                  <div className="text-xs text-[var(--muted)]">
+                    দাখিল তারিখ: <span className="font-mono">{req.created_at ? new Date(req.created_at).toLocaleDateString('bn-BD') : 'আজ'}</span>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     {!isAccepted && !isRejected && (
                       <>
                         <button
                           type="button"
                           onClick={() => setSelectedTaskForReject(req)}
-                          className="px-4 py-2.5 rounded-xl text-sm font-bold text-[#e8b6b8] bg-[#382326] hover:bg-[#4d2f33] border border-[#71434a] transition flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+                          className="civic-btn-danger text-xs py-1.5 px-3"
                         >
-                          <XCircle className="w-4 h-4" />
+                          <XCircle className="w-3.5 h-3.5" aria-hidden="true" />
                           <span>প্রত্যাখ্যান (Reject)</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => handleAccept(req.id)}
-                          className="px-5 py-2.5 rounded-xl text-sm font-bold text-[#0d100e] bg-[#d4c19a] hover:bg-[#ebd8b1] shadow-lg transition flex items-center gap-2 cursor-pointer active:scale-95"
+                          className="civic-btn-primary text-xs py-1.5 px-3.5"
                         >
-                          <CheckCircle2 className="w-4 h-4" />
+                          <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
                           <span>দায়িত্ব গ্রহণ করুন (Accept)</span>
                         </button>
                       </>
                     )}
                     <Link
                       to={`/officer/tasks/${req.id}`}
-                      className="px-4 py-2.5 rounded-xl text-sm font-semibold text-[var(--ink)] bg-[var(--paper)] hover:bg-[var(--green-light)] border border-[var(--line)] transition flex items-center gap-2 cursor-pointer shadow-sm"
+                      className="civic-btn-secondary text-xs py-1.5 px-3"
                     >
                       <span>বিস্তারিত</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                     </Link>
                   </div>
                 </div>
@@ -243,31 +236,32 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
 
       {/* Mandatory Reason Rejection Modal */}
       {selectedTaskForReject && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="civic-card-elevated rounded-2xl max-w-lg w-full p-6 sm:p-7 border border-[#71434a] bg-[var(--paper)] shadow-2xl space-y-4 animate-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="civic-card-elevated rounded-xl max-w-lg w-full p-6 border border-[var(--line)] bg-[var(--paper)] shadow-2xl space-y-4 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
-              <div className="flex items-center gap-2.5">
-                <XCircle className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-bold text-[var(--ink)]">
+              <div className="flex items-center gap-2">
+                <XCircle className="w-5 h-5 text-[var(--status-emergency)]" aria-hidden="true" />
+                <h3 className="text-base font-bold text-[var(--ink)]">
                   টাস্ক প্রত্যাখ্যানের কারণ প্রদান করুন
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedTaskForReject(null)}
-                className="text-[var(--muted)] hover:text-[var(--ink)] p-1.5 cursor-pointer rounded-lg hover:bg-[var(--green-light)]"
+                className="text-[var(--muted)] hover:text-[var(--ink)] p-1 cursor-pointer rounded-md"
+                aria-label="বন্ধ করুন"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-sm text-[#a7b0a8] leading-relaxed">
+            <p className="text-xs text-[var(--muted)] leading-relaxed">
               সিটি কর্পোরেশন নীতিমালার অধীনে দাপ্তরিক প্রত্যাখ্যানের জন্য বাধ্যতামূলক কারণ উল্লেখ করা আবশ্যক। এটি কেস হিস্ট্রিতে অপরিবর্তনীয়ভাবে লিপিবদ্ধ থাকবে এবং সমন্বয়কের নিকট পর্যালোচনায় প্রেরিত হবে।
             </p>
 
-            <form onSubmit={handleRejectSubmit} className="space-y-4">
+            <form onSubmit={handleRejectSubmit} className="space-y-3">
               <div>
-                <label className="block text-sm font-semibold text-[#eeeee6] mb-2">
+                <label className="block text-xs font-semibold text-[var(--ink)] mb-1.5">
                   প্রত্যাখ্যানের কারণ (বাংলায় লিখুন):
                 </label>
                 <textarea
@@ -276,22 +270,22 @@ export const OfficerDepartmentRequestsPage: React.FC = () => {
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   placeholder="যেমন: সড়কটি বর্তমানে অন্য সংস্থার খনন কাজের আওতাভুক্ত থাকায় ড্রেনেজ কাজ পরিচালনা সম্ভব হচ্ছে না..."
-                  className="w-full bg-[#0d100e] text-[#eeeee6] placeholder-[#708379] p-3.5 rounded-xl border border-[#343d34] focus:outline-none focus:border-[#d4c19a] text-sm leading-relaxed"
+                  className="civic-input text-xs leading-relaxed"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-2">
+              <div className="flex items-center justify-end gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={() => setSelectedTaskForReject(null)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[#a7b0a8] hover:text-[#eeeee6] bg-[#0d100e] border border-[#343d34] transition cursor-pointer"
+                  className="civic-btn-secondary text-xs py-1.5 px-3.5"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
                   disabled={!rejectionReason.trim()}
-                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-[#e8b6b8] bg-[#382326] hover:bg-[#4d2f33] border border-[#71434a] transition disabled:opacity-50 cursor-pointer shadow-md"
+                  className="civic-btn-danger text-xs py-1.5 px-4 disabled:opacity-50"
                 >
                   প্রত্যাখ্যান নিশ্চিত করুন
                 </button>

@@ -384,14 +384,14 @@ export const ReportProblemWizard: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate(`/cases/${createdCaseId}`)}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[var(--green)] hover:bg-[var(--green-dark)] text-white text-xs font-bold shadow transition cursor-pointer"
+              className="civic-btn-primary w-full sm:w-auto px-6 py-3 text-xs font-bold shadow-xs cursor-pointer"
             >
               অভিযোগের অগ্রগতি দেখুন (Live Tracking)
             </button>
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[var(--paper)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] text-xs font-semibold transition cursor-pointer"
+              className="civic-btn-secondary w-full sm:w-auto px-6 py-3 text-xs font-semibold cursor-pointer"
             >
               হোমে ফিরুন
             </button>

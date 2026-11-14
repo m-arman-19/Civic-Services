@@ -211,12 +211,11 @@ export const AskSathiDrawer: React.FC = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4.5 py-3 rounded-full bg-[#166534] hover:bg-[#14532d] text-white border border-[#22c55e]/40 shadow-xl hover:scale-105 active:scale-95 transition cursor-pointer"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent)] text-[var(--accent-fg)] border border-[var(--line)] shadow-lg hover:opacity-90 active:scale-95 transition cursor-pointer"
         aria-label="সাথী এআই অ্যাসিস্ট্যান্ট ওপেন করুন"
       >
-        <Sparkles className="w-4 h-4 text-[#d4c19a]" />
+        <Sparkles className="w-4 h-4" aria-hidden="true" />
         <span className="text-xs font-bold tracking-wide">Ask Sathi · সাথী এআই</span>
-        <span className="text-[#d4c19a] text-xs font-bold">✦</span>
       </button>
 
       {/* Slide-over Drawer Panel */}
@@ -224,18 +223,18 @@ export const AskSathiDrawer: React.FC = () => {
         <aside
           role="dialog"
           aria-label="সাথী এআই চ্যাট প্যানেল"
-          className="fixed bottom-20 right-6 z-50 w-[92vw] sm:w-[410px] h-[560px] max-h-[82vh] flex flex-col bg-[var(--paper)] text-[var(--ink)] border border-[var(--line)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
+          className="fixed bottom-20 right-6 z-50 w-[92vw] sm:w-[400px] h-[540px] max-h-[80vh] flex flex-col bg-[var(--paper)] text-[var(--ink)] border border-[var(--line)] rounded-xl shadow-2xl overflow-hidden animate-in fade-in duration-150"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3.5 bg-[var(--bg)] border-b border-[var(--line)]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#eaf5ed] border border-[#bbf7d0] text-[#166534] flex items-center justify-center font-bold">
-                <Bot className="w-4 h-4 text-[#166534]" />
+          <div className="flex items-center justify-between px-4 py-3 bg-[var(--paper-elevated)] border-b border-[var(--line)]">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-md bg-[var(--ink)] text-[var(--paper)] flex items-center justify-center font-bold">
+                <Bot className="w-4 h-4" aria-hidden="true" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-xs font-bold text-[var(--ink)]">নাগরিক সাথী এআই</h3>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#eaf5ed] text-[#166534] border border-[#bbf7d0] font-mono font-bold">
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-[var(--paper)] text-[var(--ink)] border border-[var(--line)] font-mono font-bold">
                     VERIFIED
                   </span>
                 </div>
@@ -245,34 +244,34 @@ export const AskSathiDrawer: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-xl text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--bg)] transition cursor-pointer"
+              className="p-1 rounded-md text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line-subtle)] transition cursor-pointer"
               aria-label="বন্ধ করুন"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[var(--paper)]">
+          <div className="flex-1 overflow-y-auto p-3.5 space-y-2.5 bg-[var(--paper)]">
             {messages.map(msg => (
               <div
                 key={msg.id}
-                className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'assistant' && (
-                  <div className="w-6 h-6 rounded-full bg-[#eaf5ed] text-[#166534] border border-[#bbf7d0] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                  <div className="w-5 h-5 rounded-full bg-[var(--paper-elevated)] text-[var(--ink)] border border-[var(--line)] flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">
                     ✦
                   </div>
                 )}
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-xs ${
+                  className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-xs leading-relaxed shadow-xs ${
                     msg.sender === 'user'
-                      ? 'bg-[#166534] text-white rounded-br-none'
-                      : 'bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-bl-none'
+                      ? 'bg-[var(--accent)] text-[var(--accent-fg)] rounded-br-none'
+                      : 'bg-[var(--paper-elevated)] text-[var(--ink)] border border-[var(--line)] rounded-bl-none'
                   }`}
                 >
                   <p className="whitespace-pre-line">{msg.text}</p>
-                  <span className={`block text-[9px] mt-1.5 text-right ${msg.sender === 'user' ? 'text-green-100' : 'text-[var(--muted)]'}`}>
+                  <span className={`block text-[9px] mt-1 text-right ${msg.sender === 'user' ? 'opacity-80' : 'text-[var(--muted)]'}`}>
                     {msg.timestamp}
                   </span>
                 </div>
@@ -282,14 +281,14 @@ export const AskSathiDrawer: React.FC = () => {
           </div>
 
           {/* Contextual Suggestions */}
-          <div className="px-3 py-2 bg-[var(--bg)] border-t border-[var(--line)] overflow-x-auto">
+          <div className="px-3 py-2 bg-[var(--paper-elevated)] border-t border-[var(--line)] overflow-x-auto">
             <div className="flex gap-1.5 whitespace-nowrap">
               {DEFAULT_SUGGESTIONS.map((sug, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => handleSend(sug)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] bg-[var(--paper)] hover:bg-[#eaf5ed] text-[var(--ink)] hover:text-[#166534] border border-[var(--line)] hover:border-[#166534] transition cursor-pointer"
+                  className="px-2.5 py-1 rounded-md text-[10px] bg-[var(--paper)] hover:bg-[var(--line-subtle)] text-[var(--ink)] border border-[var(--line)] transition cursor-pointer font-medium"
                 >
                   {sug}
                 </button>
@@ -303,22 +302,22 @@ export const AskSathiDrawer: React.FC = () => {
               e.preventDefault();
               handleSend(input);
             }}
-            className="p-3 bg-[var(--paper)] border-t border-[var(--line)] flex items-center gap-2"
+            className="p-2.5 bg-[var(--paper)] border-t border-[var(--line)] flex items-center gap-2"
           >
             <input
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="আপনার প্রশ্ন বা সেবার নাম লিখুন..."
-              className="flex-1 bg-[var(--bg)] text-xs text-[var(--ink)] placeholder-[var(--muted)] px-3.5 py-2.5 rounded-xl border border-[var(--line)] focus:outline-none focus:border-[#166534] transition"
+              className="flex-1 bg-[var(--paper-elevated)] text-xs text-[var(--ink)] placeholder-[var(--muted)] px-3 py-2 rounded-lg border border-[var(--line)] focus:outline-none focus:border-[var(--accent)] transition"
             />
             <button
               type="submit"
               disabled={!input.trim()}
-              className="p-2.5 rounded-xl bg-[#166534] hover:bg-[#14532d] disabled:opacity-40 text-white transition cursor-pointer shadow-xs"
+              className="p-2 rounded-lg bg-[var(--accent)] text-[var(--accent-fg)] disabled:opacity-40 transition cursor-pointer shadow-xs"
               aria-label="বার্তা পাঠান"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </form>
         </aside>

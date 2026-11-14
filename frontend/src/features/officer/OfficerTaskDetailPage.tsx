@@ -97,57 +97,58 @@ export const OfficerTaskDetailPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6 animate-fade-in">
       {/* Back and Title Header */}
-      <div className="flex items-center justify-between pb-5 border-b border-[#343d34]">
+      {/* Back and Title Header */}
+      <div className="flex items-center justify-between pb-5 border-b border-[var(--line)]">
         <Link
           to="/officer/tasks"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#a7b0a8] hover:text-[#eeeee6] transition"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>মাঠ কার্যতালিকা ড্যাশবোর্ডে ফিরুন</span>
         </Link>
         <div className="flex items-center gap-3">
           <StatusBadge status={task.status} />
-          <span className="text-sm font-medium text-[#a7b0a8]">
-            এসএলএ: <strong className="text-[#eeeee6] font-mono">{sla.text}</strong>
+          <span className="text-sm font-medium text-[var(--muted)]">
+            এসএলএ: <strong className="text-[var(--ink)] font-mono">{sla.text}</strong>
           </span>
         </div>
       </div>
 
       {/* Task Summary Card */}
-      <div className="p-6 sm:p-7 rounded-2xl bg-[#151a16] border border-[#343d34] shadow-xl space-y-5">
+      <div className="p-6 sm:p-7 rounded-2xl civic-card shadow-sm space-y-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2">
             <div className="flex items-center gap-2.5">
-              <span className="font-mono text-xs font-bold text-[#d4c19a] bg-[#0d100e] px-3 py-1 rounded-lg border border-[#343d34]">
+              <span className="font-mono text-xs font-bold text-[var(--ink)] bg-[var(--bg)] px-3 py-1 rounded-lg border border-[var(--line)]">
                 #{parentCase.id}
               </span>
-              <span className="text-sm font-bold text-[#4b9e78]">
+              <span className="text-sm font-bold text-[var(--ink)]">
                 ধাপ {toBanglaNumber(task.sequenceOrder)}: {task.departmentName}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-[#eeeee6] leading-snug">{task.title}</h1>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-[var(--ink)] leading-snug">{task.title}</h1>
           </div>
         </div>
 
-        <p className="text-sm text-[#eeeee6] bg-[#0d100e] p-4 rounded-xl border border-[#2e372e] leading-relaxed">
+        <p className="text-sm text-[var(--ink)] bg-[var(--bg)] p-4 rounded-xl border border-[var(--line)] leading-relaxed">
           {task.description}
         </p>
 
         {/* Location & Case Meta */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-sm">
           <div className="flex items-start gap-3">
-            <MapPin className="w-5 h-5 text-[#4b9e78] shrink-0 mt-0.5" />
+            <MapPin className="w-5 h-5 text-[var(--ink)] shrink-0 mt-0.5" />
             <div>
-              <strong className="text-[#eeeee6] block text-sm font-semibold">{parentCase.location.address}</strong>
-              <span className="text-xs text-[#a7b0a8]">{parentCase.location.wardName} ({parentCase.location.landmark})</span>
+              <strong className="text-[var(--ink)] block text-sm font-semibold">{parentCase.location.address}</strong>
+              <span className="text-xs text-[var(--muted)]">{parentCase.location.wardName} ({parentCase.location.landmark})</span>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <Clock className="w-5 h-5 text-[#d4c19a] shrink-0 mt-0.5" />
+            <Clock className="w-5 h-5 text-[var(--muted)] shrink-0 mt-0.5" />
             <div>
-              <span className="text-xs text-[#a7b0a8] block">এসএলএ সময়সীমা:</span>
-              <strong className="text-[#eeeee6] text-sm font-mono">{formatBanglaDate(task.slaDeadline)}</strong>
+              <span className="text-xs text-[var(--muted)] block">এসএলএ সময়সীমা:</span>
+              <strong className="text-[var(--ink)] text-sm font-mono">{formatBanglaDate(task.slaDeadline)}</strong>
             </div>
           </div>
         </div>
@@ -158,14 +159,14 @@ export const OfficerTaskDetailPage: React.FC = () => {
           <button
             type="button"
             onClick={handleStartInspection}
-            className="px-4 py-2.5 rounded-xl bg-amber-50 dark:bg-[#373224] hover:bg-amber-100 dark:hover:bg-[#4d442c] text-amber-800 dark:text-[#d4c19a] border border-amber-300 dark:border-[#6b5c3e] text-sm font-bold transition shadow-sm cursor-pointer active:scale-95"
+            className="civic-btn-secondary text-sm px-4 py-2.5"
           >
             ১. পরিদর্শন শুরু করুন
           </button>
           <button
             type="button"
             onClick={handleMarkInProgress}
-            className="px-4 py-2.5 rounded-xl bg-[var(--green-light)] hover:bg-[var(--green)] hover:text-white text-[var(--green)] border border-[var(--line)] text-sm font-bold transition shadow-sm cursor-pointer active:scale-95"
+            className="civic-btn-primary text-sm px-4 py-2.5"
           >
             ২. সংস্কার কাজ চলমান
           </button>
@@ -173,9 +174,9 @@ export const OfficerTaskDetailPage: React.FC = () => {
       </div>
 
       {/* Dependency Blocker / Waiting Reason Reporter */}
-      <div className="p-6 rounded-2xl bg-[#2a2419] border border-[#6b5c3e] shadow-xl space-y-4">
-        <div className="flex items-center gap-2.5 text-sm font-bold text-[#d4c19a]">
-          <AlertTriangle className="w-5 h-5 text-[#d4c19a] shrink-0" />
+      <div className="p-6 rounded-2xl civic-card border-[var(--status-medium-line)] bg-[var(--status-medium-bg)] shadow-sm space-y-4">
+        <div className="flex items-center gap-2.5 text-sm font-bold text-[var(--status-medium)]">
+          <AlertTriangle className="w-5 h-5 shrink-0" />
           <span>কাজের অগ্রগতি স্থবির হওয়ার কারণ যোগ করুন (Waiting Blocker):</span>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
@@ -184,31 +185,31 @@ export const OfficerTaskDetailPage: React.FC = () => {
             value={waitingReasonInput}
             onChange={e => setWaitingReasonInput(e.target.value)}
             placeholder="যেমন: বৃষ্টিপাতের কারণে ড্রেনের পানি নিষ্কাশনে দেরি হচ্ছে..."
-            className="flex-1 px-4 py-3 text-sm bg-[#0d100e] text-[#eeeee6] rounded-xl border border-[#343d34] focus:outline-none focus:border-[#d4c19a] placeholder-[#708379]"
+            className="civic-input text-sm flex-1"
           />
           <button
             type="button"
             onClick={handleAddWaitingReason}
-            className="px-5 py-3 rounded-xl bg-[#d4c19a] hover:bg-[#ebd8b1] text-[#0d100e] text-sm font-bold shadow-md transition cursor-pointer active:scale-95 shrink-0"
+            className="civic-btn-secondary text-sm px-5 py-3 shrink-0"
           >
             স্থবির কারণ যোগ করুন
           </button>
         </div>
         {task.waitingReason && (
-          <p className="text-xs text-[#d4c19a] font-medium pt-1">
-            বর্তমান স্থবিরতা: <span className="underline">{task.waitingReason}</span>
+          <p className="text-xs text-[var(--status-medium)] font-medium pt-1">
+            বর্তমান স্থবিরতা: <span className="underline font-bold">{task.waitingReason}</span>
           </p>
         )}
       </div>
 
       {/* Resolution Proof Uploader (M8 Evidence Verification) */}
-      <div className="p-6 sm:p-7 rounded-2xl bg-[#151a16] border border-[#343d34] shadow-xl space-y-5">
+      <div className="p-6 sm:p-7 rounded-2xl civic-card shadow-sm space-y-5">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-[#eeeee6] flex items-center gap-2.5">
-            <CheckCircle2 className="w-5 h-5 text-[#4b9e78]" />
+          <h2 className="text-base sm:text-lg font-bold text-[var(--ink)] flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-[var(--status-low)]" />
             <span>সমাধানের প্রমাণ ও ছবি আপলোড (Resolution Evidence)</span>
           </h2>
-          <p className="text-sm text-[#a7b0a8] mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             কাজ সম্পন্নের পর সুস্পষ্ট ছবি/ভিডিও আপলোড করুন যা নাগরিকের প্রাথমিক সমস্যার সাথে তুলনাযোগ্য
           </p>
         </div>
@@ -222,7 +223,7 @@ export const OfficerTaskDetailPage: React.FC = () => {
 
         {/* Resolution Notes */}
         <div>
-          <label className="block text-sm font-bold text-[#eeeee6] mb-2">
+          <label className="block text-sm font-bold text-[var(--ink)] mb-2">
             মাঠ সমাধান নোট ও বিবরণ (Resolution Notes):
           </label>
           <textarea
@@ -230,7 +231,7 @@ export const OfficerTaskDetailPage: React.FC = () => {
             value={resolutionNotes}
             onChange={e => setResolutionNotes(e.target.value)}
             placeholder="কাজের বিস্তারিত বিবরণ লিখুন..."
-            className="w-full p-4 text-sm bg-[#0d100e] text-[#eeeee6] rounded-xl border border-[#343d34] focus:outline-none focus:border-[#4b9e78] leading-relaxed placeholder-[#708379]"
+            className="civic-input text-sm leading-relaxed"
           />
         </div>
 
@@ -240,7 +241,7 @@ export const OfficerTaskDetailPage: React.FC = () => {
             type="button"
             onClick={handleSubmitResolutionProof}
             disabled={isSubmitting}
-            className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#4b9e78] hover:bg-[#5db88e] text-[#0d100e] text-sm font-bold shadow-lg transition disabled:opacity-50 cursor-pointer active:scale-95"
+            className="civic-btn-primary flex items-center gap-2 px-6 py-3.5 text-sm font-bold shadow-sm"
           >
             <CheckCircle2 className="w-5 h-5" />
             <span>সমাধান প্রমাণ জমা দিন ও টাস্ক সমাপ্ত করুন</span>

@@ -200,8 +200,8 @@ export const OfficerTasksPage: React.FC = () => {
                   </span>
 
                   {isBlocked ? (
-                    <span className="flex items-center gap-2 text-amber-800 dark:text-[#d4c19a] font-semibold bg-amber-50 dark:bg-[#373224] px-4 py-2 rounded-xl border border-amber-200 dark:border-[#6b5c3e] text-xs sm:text-sm">
-                      <Lock className="w-4 h-4" />
+                    <span className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-semibold bg-amber-50 dark:bg-amber-950/80 px-4 py-2 rounded-xl border border-amber-300 dark:border-amber-700 text-xs sm:text-sm shadow-xs">
+                      <Lock className="w-4 h-4 text-amber-700 dark:text-amber-400" />
                       <span>পূর্ববর্তী বিভাগের কাজ সম্পন্ন হওয়ার অপেক্ষায়</span>
                     </span>
                   ) : (

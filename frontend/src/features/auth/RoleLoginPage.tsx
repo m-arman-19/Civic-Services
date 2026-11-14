@@ -23,7 +23,8 @@ const destinations: Record<UserRole, string> = {
   ward_desk: '/ward',
   field_officer: '/officer',
   coordinator: '/coordinator',
-  admin: '/admin'
+  admin: '/admin',
+  governance_head: '/governance'
 };
 
 const roleTitles: Record<UserRole, string> = {
@@ -31,7 +32,8 @@ const roleTitles: Record<UserRole, string> = {
   ward_desk: 'ওয়ার্ড ডেস্ক অফিসার (Ward Desk)',
   field_officer: 'দপ্তর কর্মকর্তা (Department Officer)',
   coordinator: 'কেস সমন্বয়ক (Case Coordinator)',
-  admin: 'সিস্টেম অ্যাডমিন (Administrator)'
+  admin: 'সিস্টেম অ্যাডমিন (System Administrator)',
+  governance_head: 'সিটি গভর্নেন্স প্রধান (City Governance Head)'
 };
 
 export const RoleLoginPage: React.FC = () => {
@@ -47,6 +49,8 @@ export const RoleLoginPage: React.FC = () => {
       ? 'ward_desk'
       : requestedRole === 'officer'
       ? 'field_officer'
+      : requestedRole === 'governance'
+      ? 'governance_head'
       : requestedRole
   ) as UserRole;
 
@@ -78,32 +82,32 @@ export const RoleLoginPage: React.FC = () => {
       <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6 sm:py-12 animate-in fade-in duration-200">
         <Link
           to="/"
-          className="mb-6 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[var(--muted)] hover:text-[#166534] transition"
+          className="mb-6 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition"
         >
           <ArrowLeft size={16} aria-hidden="true" /> মূল পাতায় ফেরত যান (Home)
         </Link>
 
         {/* Redirect Context Alert (e.g. from "সমস্যা জানান") */}
         {redirectTarget === '/report' && (
-          <div className="mb-5 p-4 rounded-2xl bg-[#eaf5ed] border border-[#bbf7d0] text-[#166534] flex items-start gap-3 shadow-xs">
-            <AlertCircle className="w-5 h-5 text-[#166534] shrink-0 mt-0.5" />
+          <div className="mb-5 p-4 rounded-2xl bg-[var(--paper-elevated)] border border-[var(--line)] text-[var(--ink)] flex items-start gap-3 shadow-xs">
+            <AlertCircle className="w-5 h-5 text-[var(--ink)] shrink-0 mt-0.5" />
             <div className="text-xs leading-relaxed">
               <strong className="font-bold text-sm block mb-0.5">সমস্যা রিপোর্ট করতে লগইন আবশ্যক</strong>
-              <span>
+              <span className="text-[var(--muted)]">
                 নাগরিক সমস্যার সঠিক নিষ্পত্তি, রিয়েল-টাইম অগ্রগতি ট্র্যাকিং এবং সমাধান পরবর্তী যাচাইয়ের জন্য অনুগ্রহ করে আপনার নাগরিক একাউন্টে প্রবেশ করুন।
               </span>
             </div>
           </div>
         )}
 
-        <section className="civic-card-elevated rounded-2xl p-6 sm:p-8 border border-[var(--line)] bg-[var(--paper)] shadow-xl space-y-6">
+        <section className="civic-card-elevated rounded-2xl p-6 sm:p-8 border border-[var(--line)] bg-[var(--paper)] shadow-md space-y-6">
           {/* Header */}
           <div className="flex items-start gap-4 border-b border-[var(--line)] pb-5">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#bbf7d0] bg-[#eaf5ed] text-[#166534] shadow-xs">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] shadow-xs">
               <UserRound size={22} aria-hidden="true" />
             </span>
             <div>
-              <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-[#166534] bg-[#eaf5ed] px-2 py-0.5 rounded-full border border-[#bbf7d0]">
+              <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-[var(--ink)] bg-[var(--bg)] px-2 py-0.5 rounded-full border border-[var(--line)]">
                 নাগরিক প্রবেশদ্বার · CITIZEN ACCESS
               </span>
               <h1 className="mt-1.5 text-xl sm:text-2xl font-extrabold text-[var(--ink)]">
@@ -128,7 +132,7 @@ export const RoleLoginPage: React.FC = () => {
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   placeholder="01XXXXXXXXX"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] text-xs font-mono font-medium focus:outline-none focus:border-[#166534] transition"
+                  className="civic-input pl-10 text-xs font-mono font-medium"
                   required
                 />
               </div>
@@ -143,7 +147,7 @@ export const RoleLoginPage: React.FC = () => {
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="আপনার নাম লিখুন..."
-                className="w-full px-4 py-2.5 rounded-xl border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] text-xs font-medium focus:outline-none focus:border-[#166534] transition"
+                className="civic-input text-xs font-medium"
                 required
               />
             </div>
@@ -157,7 +161,7 @@ export const RoleLoginPage: React.FC = () => {
                 <select
                   value={ward}
                   onChange={e => setWard(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] text-xs font-medium focus:outline-none focus:border-[#166534] transition"
+                  className="civic-input pl-10 text-xs font-medium"
                 >
                   <option value="ward_03">ওয়ার্ড ৩ (মিরপুর ১০, ঢাকা উত্তর)</option>
                   <option value="ward_12">ওয়ার্ড ১২ (ধানমন্ডি ২৭, ঢাকা দক্ষিণ)</option>
@@ -169,7 +173,7 @@ export const RoleLoginPage: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full py-3 px-5 rounded-xl bg-[#166534] hover:bg-[#14532d] text-white font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition cursor-pointer shadow-md mt-2"
+              className="civic-btn-primary w-full py-3 px-5 text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 mt-2 shadow-sm"
             >
               <span>নাগরিক পোর্টালে সরাসরি প্রবেশ করুন</span>
               <ArrowRight size={16} aria-hidden="true" />
@@ -179,7 +183,7 @@ export const RoleLoginPage: React.FC = () => {
           {/* Citizen Facilities & Guarantees */}
           <div className="rounded-xl border border-[var(--line)] bg-[var(--bg)] p-4 text-xs space-y-2.5">
             <h3 className="font-bold text-[var(--ink)] flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#166534]" />
+              <ShieldCheck className="w-4 h-4 text-[var(--ink)]" />
               <span>নাগরিক সুরক্ষা ও প্ল্যাটফর্ম সুবিধা:</span>
             </h3>
             <ul className="space-y-1.5 text-[var(--muted)] pl-5 list-disc text-[11px] leading-relaxed">
@@ -193,7 +197,7 @@ export const RoleLoginPage: React.FC = () => {
           {/* Discreet link for staff/officials */}
           <div className="pt-4 border-t border-[var(--line)] text-center text-xs text-[var(--muted)]">
             <span>আপনি কি সিটি কর্পোরেশনের দায়িত্বপ্রাপ্ত কর্মকর্তা? </span>
-            <Link to="/roles" className="text-[#166534] font-bold hover:underline inline-flex items-center gap-1">
+            <Link to="/roles" className="text-[var(--ink)] font-bold hover:underline inline-flex items-center gap-1">
               <span>দাপ্তরিক ওয়ার্কস্পেস তালিকায় যান</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
@@ -208,18 +212,18 @@ export const RoleLoginPage: React.FC = () => {
     <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 sm:py-12 animate-in fade-in duration-200">
       <Link
         to="/roles"
-        className="mb-6 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[var(--muted)] hover:text-[#166534] transition"
+        className="mb-6 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition"
       >
         <ArrowLeft size={16} aria-hidden="true" /> সকল ওয়ার্কস্পেসের তালিকায় ফেরত যান
       </Link>
 
-      <section className="civic-card-elevated rounded-2xl p-6 sm:p-8 border border-[var(--line)] bg-[var(--paper)] shadow-xl" aria-labelledby="access-heading">
+      <section className="civic-card-elevated rounded-2xl p-6 sm:p-8 border border-[var(--line)] bg-[var(--paper)] shadow-md" aria-labelledby="access-heading">
         <div className="mb-6 flex items-start gap-4 border-b border-[var(--line)] pb-5">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--line)] bg-[var(--bg)] text-[#166534]">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)]">
             <Landmark size={22} aria-hidden="true" />
           </span>
           <div>
-            <p className="text-[10px] font-mono tracking-widest uppercase font-bold text-[#166534]">দাপ্তরিক ওয়ার্কস্পেস প্রবেশ</p>
+            <p className="text-[10px] font-mono tracking-widest uppercase font-bold text-[var(--muted)]">দাপ্তরিক ওয়ার্কস্পেস প্রবেশ</p>
             <h1 id="access-heading" className="mt-1 text-xl sm:text-2xl font-extrabold text-[var(--ink)]">
               {roleTitles[selected.role]}
             </h1>
@@ -230,7 +234,7 @@ export const RoleLoginPage: React.FC = () => {
         <div className="space-y-6">
           <div className="rounded-xl border border-[var(--line)] bg-[var(--bg)] p-4 text-xs text-[var(--muted)] leading-relaxed">
             <h2 className="text-sm font-semibold text-[var(--ink)] mb-1.5 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#166534]" />
+              <Sparkles className="w-4 h-4 text-[var(--ink)]" />
               <span>ভূমিকা ভিত্তিক প্রবেশাধিকার ও নিরাপত্তা</span>
             </h2>
             <p>
@@ -241,7 +245,7 @@ export const RoleLoginPage: React.FC = () => {
           <button
             type="button"
             onClick={handleStaffLogin}
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#166534] hover:bg-[#14532d] px-5 text-xs font-bold text-white uppercase tracking-wider transition shadow-md cursor-pointer"
+            className="civic-btn-primary inline-flex min-h-12 w-full items-center justify-center gap-2.5 px-5 text-xs font-bold uppercase tracking-wider transition shadow-sm cursor-pointer"
           >
             <span>{selected.title} ওয়ার্কস্পেসে প্রবেশ করুন</span>
             <ArrowRight size={16} aria-hidden="true" />
@@ -258,7 +262,7 @@ export const RoleLoginPage: React.FC = () => {
                     loginAsRole(item.role);
                     navigate(destinations[item.role]);
                   }}
-                  className="rounded-xl border border-[var(--line)] bg-[var(--bg)] px-3.5 py-2.5 text-left text-xs font-medium text-[var(--ink)] hover:border-[#166534] hover:text-[#166534] transition cursor-pointer"
+                  className="rounded-xl border border-[var(--line)] bg-[var(--bg)] px-3.5 py-2.5 text-left text-xs font-medium text-[var(--ink)] hover:border-[var(--line-strong)] hover:bg-[var(--paper-elevated)] transition cursor-pointer"
                 >
                   {roleTitles[item.role]}
                 </button>

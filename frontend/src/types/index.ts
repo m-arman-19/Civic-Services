@@ -1,6 +1,6 @@
 // Authoritative Types for Nagorik Sathi AI
 
-export type UserRole = 'citizen' | 'ward_desk' | 'field_officer' | 'coordinator' | 'admin';
+export type UserRole = 'citizen' | 'ward_desk' | 'field_officer' | 'coordinator' | 'admin' | 'governance_head';
 
 export interface User {
   id: string;

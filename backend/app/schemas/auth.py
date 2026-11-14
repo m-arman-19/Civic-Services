@@ -10,10 +10,15 @@ class TokenResponse(BaseModel):
     full_name: str
     preferred_language: str = "bn"
     requires_mfa: bool = False
+    must_change_password: bool = False
 
 class LoginRequest(BaseModel):
     phone_or_email: str
     password: Optional[str] = None
+
+class ChangePasswordRequest(BaseModel):
+    old_password: str
+    new_password: str
 
 class OTPRequest(BaseModel):
     phone_or_email: str
@@ -33,6 +38,8 @@ class UserProfileResponse(BaseModel):
     role: UserRoleEnum
     is_active: bool
     is_verified: bool
+    account_status: Optional[str] = "active"
+    must_change_password: bool = False
     preferred_language: str
     accessibility_mode: Dict[str, Any]
     scopes: List[Dict[str, Any]] = []

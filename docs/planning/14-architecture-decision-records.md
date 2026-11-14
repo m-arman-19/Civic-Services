@@ -211,3 +211,23 @@
 - (+) Graceful handling of officer saturation without dropped tasks.
 - (-) Dispatch rules must be kept synchronized across departments.
 
+---
+
+## ADR-016: Separation of System Administrator and City Governance Head (Sixth Authority Role)
+
+**Status:** Accepted (Approved Proposed Extension to R&D v1.2)  
+**Decision:** Formalize a distinct sixth authority role: **City Governance Head** (`governance_head`), separating municipal policy governance from technical platform operations (**System Administrator**, `admin`).  
+**Context:**
+The original R&D report v1.2 (§11, Table 30) defined five operational roles: Citizen, Ward-Desk Staff, Department Officer, Case Coordinator, and System Administrator. While R&D Table 33 and §10.11 mandated "Dual Approval" for protected actions (such as reducing the AI confidence gate or altering departmental responsibility rules), having a single "Administrator" role created an inherent conflict of interest: the same technical role managing users and databases could not genuinely provide independent municipal policy oversight.  
+**Rationale:**
+1. **Separation of Concerns:** Technical platform health, database migrations, connection pooling, queue workers, and account provisioning belong to technical infrastructure operations (`admin`).
+2. **Municipal Authority:** Setting service delivery targets (SLA), approving inter-departmental task sequencing (e.g. Waste $\rightarrow$ Drain $\rightarrow$ Road), establishing public transparency privacy thresholds, and approving AI gate reductions belong to authorized municipal leadership (`governance_head`).
+3. **True Dual-Approval Enforcement:** Under this model, neither role can satisfy both approvals alone. The system explicitly prevents the same individual from approving in dual capacities (`admin_user_id != governance_head_user_id`).
+4. **Least Privilege & Privacy Protection:** System Administrator access is restricted from viewing private citizen profiles, raw phone numbers, or private case evidence. City Governance Head is restricted from viewing infrastructure secrets, database passwords, or performing arbitrary account tampering. Neither role replaces Case Coordinator for operational case closure or evidence verification.  
+**Consequences:**
+- (+) Auditable, tamper-evident policy change lifecycle with explicit technical review and governance decision stages (`PolicyChangeRequest`).
+- (+) Eliminates single-administrator bypass risks on protected AI confidence gates and responsibility rules.
+- (+) Strict backend RBAC enforcement preventing privilege escalation.
+- (-) Introduces an additional administrative role that requires distinct authentication credentials and onboarding in production municipal deployments.
+
+

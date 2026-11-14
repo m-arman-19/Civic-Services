@@ -31,12 +31,12 @@ export const CitizenCaseDetailPage: React.FC = () => {
 
   if (!caseData) {
     return (
-      <div className="max-w-3xl mx-auto p-8 text-center bg-[#151a16] rounded-xl border border-[#343d34] my-8">
-        <h2 className="text-base font-semibold text-[#eeeee6]">কেসটি খুঁজে পাওয়া যায়নি</h2>
-        <p className="text-xs text-[#a7b0a8] mt-1">সঠিক কেস আইডি দিয়ে পুনরায় চেষ্টা করুন</p>
+      <div className="max-w-3xl mx-auto p-8 text-center civic-card my-8">
+        <h2 className="text-base font-bold text-[var(--ink)]">কেসটি খুঁজে পাওয়া যায়নি</h2>
+        <p className="text-xs text-[var(--muted)] mt-1.5">সঠিক কেস আইডি দিয়ে পুনরায় চেষ্টা করুন</p>
         <button
           onClick={() => navigate('/cases')}
-          className="mt-4 px-4 py-2 bg-[#295e42] text-[#d4c19a] rounded-xl text-xs font-semibold hover:bg-[#347955] transition cursor-pointer"
+          className="mt-4 civic-btn-primary text-xs"
         >
           আমার সকল কেস দেখুন
         </button>
@@ -56,45 +56,45 @@ export const CitizenCaseDetailPage: React.FC = () => {
   const resolutionEvidence = caseData.tasks.find(t => t.resolutionEvidence && t.resolutionEvidence.length > 0)?.resolutionEvidence;
 
   return (
-    <div className="max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-200">
+    <div className="max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 animate-in fade-in duration-150">
       {/* Back Button & Top Meta */}
-      <div className="flex items-center justify-between pb-4 border-b border-[var(--line)]">
+      <div className="flex items-center justify-between pb-3.5 border-b border-[var(--line)]">
         <Link
           to="/cases"
-          className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[var(--ink)] hover:text-[#166534] transition cursor-pointer"
+          className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[var(--ink)] hover:underline transition cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4 text-[#166534]" />
+          <ArrowLeft className="w-4 h-4 text-[var(--muted)]" aria-hidden="true" />
           <span>সকল অভিযোগ তালিকায় ফিরুন</span>
         </Link>
         <span className="text-xs text-[var(--muted)]">
-          জমার তারিখ: <strong className="text-[var(--ink)]">{formatBanglaDate(caseData.submittedAt)}</strong>
+          জমার তারিখ: <strong className="text-[var(--ink)] font-mono">{formatBanglaDate(caseData.submittedAt)}</strong>
         </span>
       </div>
 
       {/* Dual Column Layout for Wide Screens */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column (8 cols) — Case details, Evidence, Sequencer & Timeline */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-5">
           {/* Case Main Header Card */}
-          <div className="rounded-2xl p-6 sm:p-8 border border-[var(--line)] bg-[var(--paper)] shadow-xs space-y-4">
+          <div className="civic-card p-5 sm:p-6 shadow-xs space-y-3.5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-mono font-bold text-[var(--ink)] bg-[var(--bg)] px-3 py-1 rounded-lg border border-[var(--line)]">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-xs font-mono font-bold text-[var(--ink)] bg-[var(--paper-elevated)] px-2.5 py-0.5 rounded-md border border-[var(--line)]">
                     #{caseData.id}
                   </span>
                   <PriorityBadge priority={caseData.priority} />
                   <StatusBadge status={caseData.status} />
                 </div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-[var(--ink)] leading-snug">
+                <h1 className="text-lg sm:text-xl font-bold text-[var(--ink)] leading-snug">
                   {caseData.title}
                 </h1>
               </div>
 
               {/* SLA / Estimated Resolution Badge */}
-              <div className="bg-[var(--bg)] border border-[var(--line)] px-4 py-2.5 rounded-xl text-right">
-                <span className="text-xs text-[var(--muted)] block">আনুমানিক সমাধান কাল:</span>
-                <strong className="text-sm text-[var(--gold)] font-bold">
+              <div className="bg-[var(--paper-elevated)] border border-[var(--line)] px-3 py-1.5 rounded-lg text-right">
+                <span className="text-[11px] text-[var(--muted)] block">আনুমানিক সমাধান কাল:</span>
+                <strong className="text-xs text-[var(--ink)] font-bold">
                   {toBanglaNumber(caseData.estimatedResolutionDays)} কর্মদিবস
                 </strong>
               </div>

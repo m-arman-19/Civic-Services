@@ -1,91 +1,133 @@
 /*
  * Nagorik Sathi AI — Centralized Design System Tokens
- * Derived from Reference Specification & R&D Report v1.2
- * Supports Dark Cinematic Mode & Ivory Light Editorial Mode
+ * Minimal Black-and-White Civic Technology Design System
+ * Built according to UI/UX Pro Max guidelines for Accessible & Ethical Civic Tech
  */
 
 :root {
-  /* Default: Soft Off-White Civic Theme ("full sada na but omn type ar color") */
-  --bg: #f6f8f6;
+  /* Core Theme: Minimal Civic Black & White */
+  --bg: #f8fafc;
   --paper: #ffffff;
-  --paper-elevated: #ffffff;
-  --ink: #111813;
-  --muted: #475549;
-  --line: #dbe2da;
-  --line-subtle: #e6ece5;
-  
-  --green: #1b5e3a;
-  --green-dark: #123e27;
-  --green-light: #eaf5ed;
-  --navy: #113b34;
-  --gold: #8c6820;
-  --accent: #1b5e3a;
-  
-  /* Semantic Status Tokens (Light Civic High-Contrast) */
-  --status-emergency: #991b1b;
+  --paper-elevated: #f1f5f9;
+  --paper-subtle: #f8fafc;
+  --ink: #0f172a;
+  --ink-secondary: #334155;
+  --muted: #475569;
+  --muted-light: #64748b;
+  --line: #e2e8f0;
+  --line-subtle: #f1f5f9;
+
+  /* Monochromatic Civic Primary & Accent */
+  --accent: #09090b;
+  --accent-hover: #27272a;
+  --accent-fg: #ffffff;
+  --ring: #09090b;
+
+  /* Compatibility Aliases for Monochromatic Civic Tech */
+  --green: #09090b;
+  --green-dark: #27272a;
+  --green-light: #f4f4f5;
+  --gold: #52525b;
+
+  /* Civic Brand Signature Subtle Tones */
+  --civic-dark: #09090b;
+  --civic-gray: #71717a;
+  --civic-border: #e4e4e7;
+
+  /* Strict Semantic Status Tokens (Accessible & Ethical) */
+  --status-emergency: #b91c1c;
   --status-emergency-bg: #fef2f2;
   --status-emergency-border: #fecaca;
-  --status-high: #92400e;
+  --status-high: #b45309;
   --status-high-bg: #fffbeb;
   --status-high-border: #fde68a;
-  --status-medium: #4338ca;
-  --status-medium-bg: #eef2ff;
-  --status-medium-border: #c7d2fe;
+  --status-medium: #374151;
+  --status-medium-bg: #f3f4f6;
+  --status-medium-border: #e5e7eb;
   --status-low: #15803d;
   --status-low-bg: #f0fdf4;
   --status-low-border: #bbf7d0;
-  --status-resolved: #166534;
-  --status-resolved-bg: #eaf5ed;
+  --status-resolved: #15803d;
+  --status-resolved-bg: #f0fdf4;
   --status-resolved-border: #bbf7d0;
 
-  /* Typography */
-  --font-editorial: 'Hind Siliguri', 'Noto Sans Bengali', 'Manrope', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-bangla: 'Hind Siliguri', 'Noto Sans Bengali', 'DM Sans', sans-serif;
-  
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* Typography Stack */
+  --font-editorial: 'Hind Siliguri', 'Noto Sans Bengali', 'Atkinson Hyperlegible', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-bangla: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Spacing Scale (8dp rhythm) */
+  --space-xs: 0.25rem;  /* 4px */
+  --space-sm: 0.5rem;   /* 8px */
+  --space-md: 1rem;     /* 16px */
+  --space-lg: 1.5rem;   /* 24px */
+  --space-xl: 2rem;     /* 32px */
+  --space-2xl: 3rem;    /* 48px */
+  --space-3xl: 4rem;    /* 64px */
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
   --radius-full: 9999px;
 
-  --shadow-lux: 0 10px 30px rgba(17, 24, 19, 0.08);
-  --shadow-card: 0 2px 12px rgba(17, 24, 19, 0.05);
+  /* Subtle Clean Shadows (Restrained, No Muddy Gradients) */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-lux: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
-/* Optional Dark Cinematic Mode */
+/* Dark Minimal Civic Mode */
 body[data-theme="dark"],
 html[data-theme="dark"] {
-  --bg: #0d100e;
-  --paper: #151a16;
-  --paper-elevated: #1b221c;
-  --ink: #eeeee6;
-  --muted: #a7b0a8;
-  --line: #343d34;
-  --line-subtle: #242c24;
-  
-  --green: #4b9e78;
-  --green-dark: #295e42;
-  --green-light: #1c2b20;
-  --navy: #0d100e;
-  --gold: #d4c19a;
-  --accent: #d4c19a;
-  
-  --status-emergency: #e8b6b8;
-  --status-emergency-bg: #382326;
-  --status-emergency-border: #71434a;
-  --status-high: #d4c19a;
-  --status-high-bg: #373224;
-  --status-high-border: #6b5c3e;
-  --status-medium: #c3b6e8;
-  --status-medium-bg: #2a293d;
-  --status-medium-border: #4f4874;
-  --status-low: #a8e6cf;
-  --status-low-bg: #1c2b20;
-  --status-low-border: #295e42;
-  --status-resolved: #4b9e78;
-  --status-resolved-bg: #1c2b20;
-  --status-resolved-border: #295e42;
+  --bg: #09090b;
+  --paper: #121215;
+  --paper-elevated: #18181b;
+  --paper-subtle: #121215;
+  --ink: #f8fafc;
+  --ink-secondary: #e2e8f0;
+  --muted: #cbd5e1;
+  --muted-light: #94a3b8;
+  --line: #27272a;
+  --line-subtle: #1f1f23;
 
-  --shadow-lux: 0 10px 40px rgba(0, 0, 0, 0.45);
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+  /* Monochromatic Inverted for Dark Theme */
+  --accent: #fafafa;
+  --accent-hover: #e4e4e7;
+  --accent-fg: #09090b;
+  --ring: #fafafa;
+
+  --civic-dark: #fafafa;
+  --civic-gray: #a1a1aa;
+  --civic-border: #27272a;
+
+  /* Compatibility Aliases for Monochromatic Civic Tech (Dark) */
+  --green: #fafafa;
+  --green-dark: #e4e4e7;
+  --green-light: #18181b;
+  --gold: #a1a1aa;
+
+  /* Semantic Status Tokens (High Contrast Dark Backgrounds) */
+  --status-emergency: #f87171;
+  --status-emergency-bg: #2b1416;
+  --status-emergency-border: #4c1d24;
+  --status-high: #fbbf24;
+  --status-high-bg: #2d2010;
+  --status-high-border: #4e3512;
+  --status-medium: #9ca3af;
+  --status-medium-bg: #181f29;
+  --status-medium-border: #2c3545;
+  --status-low: #4ade80;
+  --status-low-bg: #112317;
+  --status-low-border: #1d3e28;
+  --status-resolved: #4ade80;
+  --status-resolved-bg: #112317;
+  --status-resolved-border: #1d3e28;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lux: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 }

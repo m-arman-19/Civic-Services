@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Sparkles,
-  MapPin,
-  BarChart3,
-  BookOpen,
-  PlusCircle,
   Menu,
   X,
   LogIn,
   Sun,
   Moon,
-  Shield,
-  Layers,
   ArrowRight,
   Code
 } from 'lucide-react';
@@ -21,10 +15,9 @@ import { useTheme } from '../../context/ThemeContext';
 
 export const PublicNavbar: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { setDevDemoDrawerOpen, isDevDemoDrawerOpen } = useAuth();
+  const { setDevDemoDrawerOpen } = useAuth();
   const { isDark, toggleTheme } = useTheme();
-  
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState<'bn' | 'en'>('bn');
@@ -54,43 +47,43 @@ export const PublicNavbar: React.FC = () => {
   return (
     <>
       <header
-        className={`lux-topbar sticky top-0 z-40 w-full transition-all duration-300 border-b border-[var(--line)] ${
-          isScrolled ? 'py-2.5 shadow-sm' : 'py-3.5'
+        className={`lux-topbar sticky top-0 z-40 w-full transition-all duration-200 border-b border-[var(--line)] ${
+          isScrolled ? 'py-2.5 shadow-xs' : 'py-3.5'
         }`}
       >
         <div className="max-w-[1540px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          {/* Brand Logo & Editorial Title */}
-          <Link to="/" className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-9 h-9 rounded-xl bg-[#eaf5ed] border border-[#bbf7d0] flex items-center justify-center text-[#166534] group-hover:border-[#166534] transition shadow-xs">
-              <Sparkles className="w-5 h-5 text-[#166534]" />
+          {/* Brand Logo */}
+          <Link to="/" className="flex items-center gap-2.5 group cursor-pointer" aria-label="Nagorik Sathi AI Home">
+            <div className="w-8 h-8 rounded-lg bg-[var(--ink)] text-[var(--paper)] flex items-center justify-center shadow-xs group-hover:opacity-90 transition">
+              <Sparkles className="w-4 h-4" aria-hidden="true" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-extrabold tracking-widest text-[var(--ink)] uppercase flex items-center gap-1.5 leading-none">
-                NAGORIK SATHI <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#eaf5ed] text-[#166534] font-bold border border-[#bbf7d0]">AI</span>
+              <span className="text-xs font-bold tracking-wider text-[var(--ink)] uppercase flex items-center gap-1.5 leading-none">
+                NAGORIK SATHI <span className="text-[10px] px-1 py-0.2 rounded bg-[var(--paper-elevated)] text-[var(--ink)] font-semibold border border-[var(--line)]">AI</span>
               </span>
-              <span className="text-[9px] font-mono tracking-wider text-[var(--muted)] mt-1">
-                THE CONNECTED CITY · নাগরিক সাথী
+              <span className="text-[10px] font-medium tracking-tight text-[var(--muted)] mt-0.5">
+                নাগরিক সেবা প্ল্যাটফর্ম · দ্য কানেক্টেড সিটি
               </span>
             </div>
           </Link>
 
-          {/* Center Editorial Nav (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-8">
+          {/* Center Navigation (Desktop) */}
+          <nav className="hidden lg:flex items-center gap-7" aria-label="Main Navigation">
             {navLinks.map(link => {
               const isActive = location.pathname === link.path;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`text-xs font-bold tracking-wider uppercase transition-colors relative py-1.5 ${
+                  className={`text-xs font-semibold tracking-wide transition-colors relative py-1.5 ${
                     isActive
-                      ? 'text-[#166534]'
-                      : 'text-[var(--ink)] hover:text-[#166534]'
+                      ? 'text-[var(--ink)] font-bold'
+                      : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#166534] rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--ink)] rounded-full" />
                   )}
                 </Link>
               );
@@ -98,141 +91,135 @@ export const PublicNavbar: React.FC = () => {
           </nav>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Easy UI Mode Toggle */}
             <button
               type="button"
               onClick={toggleEasyMode}
-              className={`hidden sm:inline-flex items-center px-2.5 py-1.5 rounded-lg border text-[11px] font-semibold transition cursor-pointer ${
+              className={`hidden sm:inline-flex items-center px-2.5 py-1.5 rounded-md border text-[11px] font-semibold transition cursor-pointer ${
                 isEasyMode
-                  ? 'bg-[#166534] text-white border-[#166534]'
-                  : 'bg-white text-[var(--ink)] border-[var(--line)] hover:border-[#166534]'
+                  ? 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)]'
+                  : 'bg-[var(--paper)] text-[var(--muted)] border-[var(--line)] hover:text-[var(--ink)] hover:border-[var(--ink)]'
               }`}
             >
-              {isEasyMode ? 'সহজ মোড অন' : 'সহজ ব্যবহার'}
+              {isEasyMode ? 'সহজ মোড সক্রিয়' : 'সহজ পাঠ'}
             </button>
 
             {/* Language Switcher */}
-            <div className="flex items-center rounded-lg border border-[var(--line)] bg-white p-0.5 text-[11px]">
+            <div className="flex items-center rounded-md border border-[var(--line)] bg-[var(--paper)] p-0.5 text-[11px]">
               <button
                 type="button"
                 onClick={() => setLanguage('bn')}
-                className={`px-2 py-1 rounded font-bold transition cursor-pointer ${
-                  language === 'bn' ? 'bg-[#166534] text-white' : 'text-[var(--ink)] hover:text-[#166534]'
+                className={`px-2 py-0.5 rounded font-semibold transition cursor-pointer ${
+                  language === 'bn' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'text-[var(--muted)] hover:text-[var(--ink)]'
                 }`}
               >
-                বাংলা
+                বাং
               </button>
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`px-2 py-1 rounded font-bold transition cursor-pointer ${
-                  language === 'en' ? 'bg-[#166534] text-white' : 'text-[var(--ink)] hover:text-[#166534]'
+                className={`px-2 py-0.5 rounded font-semibold transition cursor-pointer ${
+                  language === 'en' ? 'bg-[var(--ink)] text-[var(--paper)]' : 'text-[var(--muted)] hover:text-[var(--ink)]'
                 }`}
               >
                 EN
               </button>
             </div>
 
-            {/* Theme Toggle (Dark / Ivory) */}
+            {/* Theme Toggle (Dark / Light) */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 rounded-lg border border-[var(--line)] bg-white text-[var(--muted)] hover:text-[var(--ink)] hover:border-[#166534] transition cursor-pointer"
+              className="p-1.5 rounded-md border border-[var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition cursor-pointer"
               aria-label="থিম পরিবর্তন করুন"
-              title="Dark / Ivory Light Theme"
+              title="Dark / Light Theme"
             >
-              {isDark ? <Sun className="w-4 h-4 text-[#8c6820]" /> : <Moon className="w-4 h-4" />}
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" aria-hidden="true" /> : <Moon className="w-4 h-4" aria-hidden="true" />}
             </button>
 
             {/* Demo Role Switcher Trigger */}
             <button
               type="button"
               onClick={() => setDevDemoDrawerOpen(true)}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f0fdf4] hover:bg-[#eaf5ed] text-[#166534] border border-[#bbf7d0] text-xs font-bold transition cursor-pointer shadow-xs"
-              title="৫টি রোল ওয়ার্কস্পেস ডেমো"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[var(--paper-elevated)] hover:bg-[var(--line-subtle)] text-[var(--ink)] border border-[var(--line)] text-xs font-semibold transition cursor-pointer shadow-xs"
+              title="সকল রোল ওয়ার্কস্পেস ডেমো"
             >
-              <Code className="w-3.5 h-3.5" />
+              <Code className="w-3.5 h-3.5 text-[var(--muted)]" aria-hidden="true" />
               <span>রোল ডেমো</span>
             </button>
 
             {/* Login / Portal Entry Button */}
             <Link
               to="/login"
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#166534] hover:bg-[#14532d] text-white text-xs font-bold transition shadow-xs cursor-pointer"
+              className="civic-btn-primary text-xs py-1.5 px-3"
             >
-              <LogIn className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">লগইন ও পোর্টাল</span>
+              <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>লগইন পোর্টাল</span>
             </Link>
 
             {/* Mobile Hamburger Menu */}
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg border border-[var(--line)] bg-white text-[var(--ink)] hover:bg-[var(--bg)] transition cursor-pointer"
+              className="lg:hidden p-1.5 rounded-md border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] hover:bg-[var(--paper-elevated)] transition cursor-pointer"
               aria-label="মেনু খুলুন"
             >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Full-Screen Mobile Editorial Navigation Overlay */}
+      {/* Full-Screen Mobile Navigation Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-[#0d100e]/98 flex flex-col p-6 overflow-y-auto animate-in fade-in duration-200">
-          <div className="flex items-center justify-between pb-6 border-b border-[#343d34]">
-            <span className="text-sm font-extrabold tracking-widest text-[#d4c19a]">
+        <div className="fixed inset-0 z-50 bg-[var(--paper)] text-[var(--ink)] flex flex-col p-6 overflow-y-auto animate-in fade-in duration-150">
+          <div className="flex items-center justify-between pb-4 border-b border-[var(--line)]">
+            <span className="text-xs font-extrabold tracking-wider text-[var(--ink)] uppercase">
               NAGORIK SATHI AI
             </span>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 rounded-lg border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--green-light)] transition cursor-pointer"
+              className="p-1.5 rounded-md border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--paper-elevated)] transition cursor-pointer"
+              aria-label="মেনু বন্ধ করুন"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
 
-          <nav className="my-8 space-y-4">
+          <nav className="my-6 space-y-2">
             {navLinks.map(link => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between py-3 border-b border-[#343d34]/60 text-lg font-light text-[#eeeee6] hover:text-[#d4c19a] transition"
+                className="flex items-center justify-between py-3 border-b border-[var(--line-subtle)] text-base font-medium text-[var(--ink)] hover:text-[var(--accent)] transition"
               >
                 <span className="flex items-center gap-3">
-                  <span className="font-mono text-xs text-[#d4c19a]">{link.num}</span>
+                  <span className="font-mono text-xs text-[var(--muted)]">{link.num}</span>
                   <span>{link.label}</span>
                 </span>
-                <ArrowRight className="w-4 h-4 text-[#a7b0a8]" />
+                <ArrowRight className="w-4 h-4 text-[var(--muted)]" aria-hidden="true" />
               </Link>
             ))}
           </nav>
 
-          {/* Inspirational Editorial Quote */}
-          <div className="mt-auto p-4 rounded-xl bg-[#151a16] border border-[#343d34] text-xs text-[#a7b0a8] space-y-2">
-            <strong className="text-[#eeeee6] block text-sm">A voice for every citizen.</strong>
-            <p>One report. Connected teams. A solution you can verify.</p>
-            <span className="text-[#d4c19a] font-semibold block text-[11px]">“AI proposes, People decide.”</span>
-          </div>
-
-          <div className="pt-4 flex gap-2">
+          <div className="mt-auto pt-4 flex gap-2">
             <button
               type="button"
               onClick={() => {
                 setIsMobileMenuOpen(false);
                 setDevDemoDrawerOpen(true);
               }}
-              className="flex-1 py-3 rounded-xl bg-[#295e42] text-[#d4c19a] font-bold text-xs text-center"
+              className="flex-1 civic-btn-secondary text-xs py-2.5"
             >
-              ৫টি রোল ওয়ার্কস্পেস ডেমো
+              রোল ডেমো
             </button>
             <Link
               to="/login"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex-1 py-3 rounded-xl bg-[#d4c19a] text-[#0d100e] font-bold text-xs text-center"
+              className="flex-1 civic-btn-primary text-xs py-2.5"
             >
               লগইন পোর্টাল
             </Link>

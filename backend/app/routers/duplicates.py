@@ -55,6 +55,11 @@ async def merge_duplicate_case(
     if not master or not duplicate:
         raise HTTPException(status_code=404, detail="মাস্টার অথবা ডুপ্লিকেট কেস পাওয়া যায়নি।")
 
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids and (master.ward_id not in assigned_ward_ids or duplicate.ward_id not in assigned_ward_ids):
+            raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেস একীভূত করার অনুমতি নেই।")
+
     duplicate.status = CaseStatusEnum.MERGED
     duplicate.merged_into_case_id = master.id
     master.is_master_case = True
@@ -96,6 +101,11 @@ async def unmerge_duplicate_case(
     if not case:
         raise HTTPException(status_code=404, detail="কেস পাওয়া যায়নি।")
 
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids and case.ward_id not in assigned_ward_ids:
+            raise HTTPException(status_code=403, detail="আপনার নির্ধারিত ওয়ার্ড ব্যতীত অন্য ওয়ার্ডের কেস থেকে মার্জ প্রত্যাহারের অনুমতি নেই।")
+
     case.status = CaseStatusEnum.SUBMITTED
     case.merged_into_case_id = None
 
@@ -120,3 +130,39 @@ async def unmerge_duplicate_case(
     await db.commit()
 
     return {"message_bn": "একীভূতকরণ সফলভাবে বাতিল করা হয়েছে।"}
+
+@router.get("/clusters")
+async def get_duplicate_clusters(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles([UserRoleEnum.WARD_DESK, UserRoleEnum.COORDINATOR, UserRoleEnum.ADMIN]))
+):
+    stmt = select(Case).where(Case.status.in_([CaseStatusEnum.SUBMITTED, CaseStatusEnum.VERIFIED, CaseStatusEnum.MERGED]))
+    if current_user.role == UserRoleEnum.WARD_DESK:
+        assigned_ward_ids = [s.ward_id for s in current_user.scopes if s.ward_id]
+        if assigned_ward_ids:
+            stmt = stmt.where(Case.ward_id.in_(assigned_ward_ids))
+    res = await db.execute(stmt)
+    cases = res.scalars().all()
+
+    clusters = []
+    seen_pairs = set()
+    for c in cases:
+        cands = await DuplicateDetectorService.find_duplicate_candidates(db, c)
+        for cand in cands:
+            pair_key = tuple(sorted([c.id, cand["candidate_case_id"]]))
+            if pair_key not in seen_pairs:
+                seen_pairs.add(pair_key)
+                clusters.append({
+                    "primary_case_id": c.id,
+                    "primary_tracking_number": c.tracking_number,
+                    "primary_title_bn": c.title_bn,
+                    "primary_address": c.address_text,
+                    "duplicate_case_id": cand["candidate_case_id"],
+                    "duplicate_tracking_number": cand["candidate_tracking_number"],
+                    "duplicate_title_bn": cand["title_bn"],
+                    "similarity_score": round(cand["text_similarity"] * 100),
+                    "distance_meters": round(cand["distance_meters"]),
+                    "category": c.primary_category,
+                    "status": "merged" if c.status == CaseStatusEnum.MERGED or cand.get("is_already_merged") else "pending_review"
+                })
+    return clusters
